@@ -1,0 +1,94 @@
+% set page size
+\documentclass[a4paper]{article}
+
+% use fontspec package for selecting a font with Unicode symbols
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}
+
+% use geometry package to set margins
+\usepackage[margin=2cm]{geometry}
+
+% use soul package for strike-through
+\usepackage{soul}
+
+% use xcolor package for section backgrounds
+\usepackage{xcolor}
+
+% use titlesec package for custom sections
+\usepackage{titlesec}
+
+% do not indent paragraphs
+\setlength{\parindent}{0pt}
+
+% do not show page numbers
+\pagestyle{empty}
+
+% customize sections: white font on black background
+\titleformat{name=\section}[block]
+  {\sffamily\bfseries\large}
+  {}
+  {0pt}
+  {\colorsection}
+\titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
+\newcommand{\colorsection}[1]{%
+  \colorbox{black}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{white}\ #1}}}
+
+% create environment for extra spacing
+\newdimen\origiwspc
+\newdimen\origiwstr
+\newenvironment{fontspace}[2]
+{\par
+  \origiwspc=\fontdimen2\font
+  \origiwstr=\fontdimen3\font
+  \fontdimen2\font=#1\origiwspc
+  \fontdimen3\font=#2\origiwstr
+}
+{\par
+   \fontdimen2\font=\origiwspc
+   \fontdimen3\font=\origiwstr
+}
+
+% create queue environment
+\newenvironment{queue}[2]
+{
+  \begin{minipage}{1.0\textwidth}
+  \textbf{#1}\hfill #2\\
+  \vspace{-1em}
+  \hrule
+  \vspace{0.2em}
+  \begin{fontspace}{1.5}{2}
+}
+{
+  \end{fontspace}
+  \end{minipage}
+  \vspace{2em}
+}
+
+% define partial mark
+\newcommand*{\partialMark}{☯}
+
+% define complete mark
+\newcommand*{\completeMark}{☠}
+
+% display previous episodes with strike-through
+\newcommand*{\previous}[1]{\st{#1}}
+
+\begin{document}
+
+<! for section in sections !>
+\section*{<< section.name >>}
+
+<! for queue in section.queues !>
+\begin{queue}{<< queue.name >>}{<< queue.date >><! if queue.isPartial !> \partialMark<! endif !><! if queue.isComplete !> \completeMark<! endif !>}
+<! if queue.prevItem !>
+\previous{<< queue.prevItem >>}
+<! else !>
+<! for item in queue.nextItems !>
+<< item >> <! if queue.isSplit !>\\<! endif !>
+<! endfor !>
+<! endif !>
+\end{queue}
+
+<! endfor !>
+<! endfor !>
+\end{document}
