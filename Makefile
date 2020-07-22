@@ -178,11 +178,25 @@ test-all: # run tests for all versions
 > @command -v hr >/dev/null 2>&1 && hr $(CONFIG) || true
 > @make test CONFIG=$(CONFIG)
 > $(eval CONFIG := $(shell \
+    test -f stack-nix-8.6.5.yaml \
+    && echo stack-nix-8.6.5.yaml \
+    || echo stack-8.6.5.yaml))
+> @command -v hr >/dev/null 2>&1 && hr $(CONFIG) || true
+> @make test CONFIG=$(CONFIG)
+> $(eval CONFIG := $(shell \
     test -f stack-nix.yaml \
     && echo stack-nix.yaml \
     || echo stack.yaml))
 > @command -v hr >/dev/null 2>&1 && hr $(CONFIG) || true
 > @make test CONFIG=$(CONFIG)
+> $(eval STACK_NIX_PATH := $(shell \
+    test -f stack-nix-nightly.path \
+    && cat stack-nix-nightly.path \
+    || true))
+> @command -v hr >/dev/null 2>&1 && hr nightly || true
+> @test -f stack-nix-nightly.path \
+>   && make test RESOLVER=nightly STACK_NIX_PATH="$(STACK_NIX_PATH)" \
+>   || make test RESOLVER=nightly
 .PHONY: test-all
 
 todo: # search for TODO items
