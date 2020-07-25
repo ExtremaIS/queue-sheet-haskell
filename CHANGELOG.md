@@ -26,8 +26,14 @@ following conventions:
 
 ## Unreleased
 
+### Breaking
+
+* Configure sections and queues in a single YAML file
+
 ### Non-Breaking
 
+* Add a template option
+* Add an output option
 * Refactor `Makefile`, add `STACK_NIX_PATH` support
 * Add `test-all` command to `Makefile`
 * Add Nix configuration
