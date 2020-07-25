@@ -24,6 +24,20 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.1.0.0 (2020-07-25)
+
+### Breaking
+
+* Configure sections and queues in a single YAML file
+
+### Non-Breaking
+
+* Add a template option
+* Add an output option
+* Refactor `Makefile`, add `STACK_NIX_PATH` support
+* Add `test-all` command to `Makefile`
+* Add Nix configuration
+
 ## 0.0.1.0 (2020-01-22)
 
 ### Breaking

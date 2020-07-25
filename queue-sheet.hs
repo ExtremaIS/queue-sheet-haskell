@@ -25,11 +25,10 @@ import qualified Data.Aeson as A
 import Data.Aeson (FromJSON(parseJSON), (.:), (.:?), (.!=))
 import qualified Data.Aeson.Types as AT
 
--- https://hackage.haskell.org/package/ansi-wl-pprint
-import Text.PrettyPrint.ANSI.Leijen (Doc)
-
 -- https://hackage.haskell.org/package/base
+import Control.Applicative (optional)
 import Control.Monad (forM_, unless, when)
+import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base (4,11,0)
 import Data.Monoid ((<>))
 #endif
@@ -85,6 +84,10 @@ import qualified LibOA
 -- | Build directory name
 buildDir :: FilePath
 buildDir = "queue-sheet-build"
+
+-- | Default template file
+defaultTemplate :: FilePath
+defaultTemplate = "template.tex"
 
 ------------------------------------------------------------------------------
 -- $Types
@@ -180,6 +183,29 @@ instance FromJSON Queue where
           (Nothing,   Nothing)    -> Nothing
     return Queue{..}
 
+-- | Queues file
+data QueuesFile
+  = QueuesFile
+    { qfSections :: ![Section]
+    , qfQueues   :: ![Queue]
+    }
+  deriving Show
+
+instance FromJSON QueuesFile where
+  parseJSON = A.withObject "QueuesFile" $ \o ->
+    QueuesFile
+      <$> o .: "sections"
+      <*> o .: "queues"
+
+------------------------------------------------------------------------------
+-- $Library
+
+-- | Display an error and exit the program
+errorExit :: String -> IO a
+errorExit msg = do
+    putStrLn $ "error: " ++ msg
+    exitFailure
+
 -- | Parse any scalar value as a string
 --
 -- Strings, numbers, booleans, and null are parsed as a string.  Arrays and
@@ -215,31 +241,19 @@ escapeTeX = T.foldl go ""
 ------------------------------------------------------------------------------
 -- $Yaml
 
--- | Load @sections.yaml@
-loadSectionsYaml :: FilePath -> IO [Section]
-loadSectionsYaml = loadYamlFile
-
 -- | Load @queues.yaml@
-loadQueuesYaml :: FilePath -> [Section] -> IO [Queue]
-loadQueuesYaml path sections = do
-    queues <- loadYamlFile path
-    forM_ queues $ \Queue{..} ->
-      unless (queueSection `elem` sections) . errorExit . unwords $
+loadQueuesYaml :: FilePath -> IO QueuesFile
+loadQueuesYaml path = do
+    let yamlError = errorExit
+                  . (("error loading " ++ path ++ ": ") ++)
+                  . Yaml.prettyPrintParseException
+    qf@QueuesFile{..} <- either yamlError pure =<< Yaml.decodeFileEither path
+    forM_ qfQueues $ \Queue{..} ->
+      unless (queueSection `elem` qfSections) . errorExit . unwords $
         [ "queue", TTC.render queueName
         , "has unknown section", TTC.render queueSection
         ]
-    return queues
-
--- | Load a YAML file
---
--- If there is an error, the error is displayed and the program is exited.
-loadYamlFile :: FromJSON a => FilePath -> IO [a]
-loadYamlFile path = do
-    eer <- Yaml.decodeFileEither path
-    case eer of
-      Right result -> return result
-      Left err -> errorExit $
-        "error loading " ++ path ++ ": " ++ Yaml.prettyPrintParseException err
+    return qf
 
 ------------------------------------------------------------------------------
 -- $Template
@@ -361,54 +375,71 @@ build path = Proc.callProcess "xelatex" ["-halt-on-error", path]
 ------------------------------------------------------------------------------
 -- $CLI
 
--- | Display an error and exit the program
-errorExit :: String -> IO a
-errorExit msg = do
-    putStrLn $ "error: " ++ msg
-    exitFailure
+-- | Program options
+data Options
+  = Options
+    { optTemplate :: !FilePath
+    , optOutput   :: !(Maybe FilePath)
+    , optQueues   :: !FilePath
+    }
+  deriving Show
 
--- | CLI parser information
-pinfo :: OA.ParserInfo FilePath
-pinfo
-    = OA.info (LibOA.helper <*> LibOA.versioner version <*> queuesYaml)
+-- Parse program options
+parseOptions :: IO Options
+parseOptions = OA.execParser
+    $ OA.info (LibOA.helper <*> LibOA.versioner version <*> options)
     $ mconcat
         [ OA.fullDesc
         , OA.progDesc "queue sheet utility"
         , OA.failureCode 2
-        , OA.footerDoc $ Just filesHelp
         ]
   where
     version :: String
     version = "queue-sheet-haskell " ++ showVersion Project.version
 
-    queuesYaml :: OA.Parser FilePath
-    queuesYaml = OA.strArgument $ mconcat
-      [ OA.metavar "QUEUES.yaml"
-      , OA.help "YAML file specifying queue information"
+    options :: OA.Parser Options
+    options = Options
+      <$> templateOption
+      <*> optional outputOption
+      <*> queuesArgument
+
+    templateOption :: OA.Parser FilePath
+    templateOption = OA.strOption $ mconcat
+      [ OA.long "template"
+      , OA.short 't'
+      , OA.metavar "TEMPLATE.tex"
+      , OA.value defaultTemplate
+      , OA.showDefaultWith id
+      , OA.help "template file"
       ]
 
-    filesHelp :: Doc
-    filesHelp = LibOA.section "Files:" $ LibOA.table
-      [ ("sections.yaml", "specify section names and order")
-      , ("QUEUES.yaml",   "specify queues information")
-      , ("template.tex",  "queue sheet template")
-      , ("QUEUES.pdf",    "output queue sheet")
+    outputOption :: OA.Parser FilePath
+    outputOption = OA.strOption $ mconcat
+      [ OA.long "output"
+      , OA.short 'o'
+      , OA.metavar "QUEUES.pdf"
+      , OA.help "output file"
+      ]
+
+    queuesArgument :: OA.Parser FilePath
+    queuesArgument = OA.strArgument $ mconcat
+      [ OA.metavar "QUEUES.yaml"
+      , OA.help "YAML file specifying queue information"
       ]
 
 -- | Main function
 main :: IO ()
 main = do
-    queuesYaml <- OA.execParser pinfo
-    sections   <- loadSectionsYaml "sections.yaml"
-    queues     <- loadQueuesYaml queuesYaml sections
-    template   <- loadTemplate "template.tex"
-    exists     <- doesPathExist buildDir
+    Options{..} <- parseOptions
+    QueuesFile{..} <- loadQueuesYaml optQueues
+    template <- loadTemplate optTemplate
+    exists <- doesPathExist buildDir
     when exists . errorExit $ "directory already exists: " ++ buildDir
-    let queuesTex = replaceExtension queuesYaml "tex"
-        queuesPdf = replaceExtension queuesYaml "pdf"
+    let pdfFile = fromMaybe (replaceExtension optQueues "pdf") optOutput
+        texFile = replaceExtension pdfFile "tex"
     createDirectory buildDir
     withCurrentDirectory buildDir $ do
-      renderTemplate queuesTex template $ context sections queues
-      build queuesTex
-    renameFile (buildDir </> queuesPdf) queuesPdf
+      renderTemplate texFile template $ context qfSections qfQueues
+      build texFile
+    renameFile (buildDir </> pdfFile) pdfFile
     removeDirectoryRecursive buildDir

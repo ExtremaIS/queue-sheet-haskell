@@ -1,8 +1,4 @@
-resolver: lts-14.20
+resolver: lts-16.6
 
 packages:
 - .
-
-extra-deps:
-- ginger-0.8.4.0
-- ttc-0.2.0.0
