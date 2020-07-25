@@ -25,6 +25,12 @@ used to track progress through the queues when offline.
 \--version
 :   show version and exit
 
+-t, \--template *TEMPLATE.tex*
+:   template file (default: template.tex)
+
+-o, \--output *QUEUES.pdf*
+:   output file
+
 # ARGUMENTS
 
 *QUEUES.yaml*
@@ -32,50 +38,51 @@ used to track progress through the queues when offline.
 
 # FILES
 
-## `sections.yaml`
-
-This file defines the names and order of sections.  It is a list of section
-names (strings).
-
 ## `QUEUES.yaml`
 
-This file defines the queues.  It is a list of queue objects, which have the
-following properties:
+This file is an object with two properties.
 
-name
+The *sections* property is a list of section names (strings).  Note that the
+order determines the order in the output.
+
+The *queues* property is a list of queue objects with the following
+properties:
+
+*name*
 :   name of the queue (string, required)
 
-section
+*section*
 :   name of the section (string, required)
 
-split
+*split*
 :   *true* to display items on separate lines (boolean, default *false*)
 
-tags
+*tags*
 :   list of tags (list of string, optional)
 
-date
+*date*
 :   date of last update (string, optional)
 
-prev
+*prev*
 :   previous (complete) item (string, optional)
 
-next
+*next*
 :   list of next items (list of string, optional)
 
 If both *prev* and *next* are specified, then *prev* is ignored.
 
 The following tags are supported:
 
-complete
+*complete*
 :   no new items will be added to the queue
 
-partial
+*partial*
 :   not all items of the source queue are added to the queue
 
-## `template.tex`
+## Template
 
-This file is the LaTeX template used to build the PDF, with XeTeX.
+A LaTeX template is used to build the PDF, using XeTeX.  Unless specified
+otherwise, `template.tex` is used.
 
 It is a Jinja2-style template using the following syntax:
 
@@ -90,44 +97,44 @@ Comments
 
 The context contains a single value:
 
-sections
+*sections*
 :   list of sections
 
 A section is an object with the following properties:
 
-name
+*name*
 :   name of the section (string)
 
-queues
+*queues*
 :   list of queues
 
 A queue is an object with the following properties:
 
-name
+*name*
 :   name of the queue (string)
 
-isSplit
+*isSplit*
 :   *true* to display items on separate lines (boolean)
 
-isPartial
+*isPartial*
 :   *true* if the partial tag is set (boolean)
 
-isComplete
+*isComplete*
 :   *true* if the complete tag is set (boolean)
 
-date
+*date*
 :   date or empty string if no date (string)
 
-prevItem
+*prevItem*
 :   previous item or empty string if not set (string)
 
-nextItems
+*nextItems*
 :   list of next items (list of strings)
 
 ## `QUEUES.pdf`
 
-The output is a file with the same base name as the queues file, but with a
-`.pdf` extension.
+Unless specified otherwise, the built PDF is output to a file with the same
+base name as the queues file but with a `.pdf` extension.
 
 # EXIT CODES
 
