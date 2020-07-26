@@ -384,7 +384,7 @@ data Options
     }
   deriving Show
 
--- Parse program options
+-- | Parse program options
 parseOptions :: IO Options
 parseOptions = OA.execParser
     $ OA.info (LibOA.helper <*> LibOA.versioner version <*> options)
