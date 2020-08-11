@@ -51,6 +51,9 @@ properties:
 *name*
 :   name of the queue (string, required)
 
+*url*
+:   queue URL (string, optional)
+
 *section*
 :   name of the section (string, required)
 
@@ -64,12 +67,21 @@ properties:
 :   date of last update (string, optional)
 
 *prev*
-:   previous (complete) item (string, optional)
+:   previous (complete) item (item, optional)
 
 *next*
-:   list of next items (list of string, optional)
+:   list of next items (list of items, optional)
 
 If both *prev* and *next* are specified, then *prev* is ignored.
+
+An item name may be specified using a string.  To associate a URL with an
+item, use an object with the following properties:
+
+*name*
+:   name of the item (string, required)
+
+*url*
+:   item URL (string, optional)
 
 The following tags are supported:
 
@@ -113,6 +125,9 @@ A queue is an object with the following properties:
 *name*
 :   name of the queue (string)
 
+*url*
+:   queue URL or empty string if no URL (string)
+
 *isSplit*
 :   *true* to display items on separate lines (boolean)
 
@@ -126,10 +141,18 @@ A queue is an object with the following properties:
 :   date or empty string if no date (string)
 
 *prevItem*
-:   previous item or empty string if not set (string)
+:   previous item or empty string if not set (item)
 
 *nextItems*
-:   list of next items (list of strings)
+:   list of next items (list of items)
+
+An item is an object with the following properties:
+
+*name*
+:   name of the item (string)
+
+*url*
+:   item URL or empty string if no URL (string)
 
 ## `QUEUES.pdf`
 

@@ -17,6 +17,9 @@
 % use titlesec package for custom sections
 \usepackage{titlesec}
 
+% use hyperref for URLs
+\usepackage[hidelinks]{hyperref}
+
 % do not indent paragraphs
 \setlength{\parindent}{0pt}
 
@@ -48,22 +51,6 @@
    \fontdimen3\font=\origiwstr
 }
 
-% create queue environment
-\newenvironment{queue}[2]
-{
-  \begin{minipage}{1.0\textwidth}
-  \textbf{#1}\hfill #2\\
-  \vspace{-1em}
-  \hrule
-  \vspace{0.2em}
-  \begin{fontspace}{1.5}{2}
-}
-{
-  \end{fontspace}
-  \end{minipage}
-  \vspace{2em}
-}
-
 % define partial mark
 \newcommand*{\partialMark}{☯}
 
@@ -79,15 +66,36 @@
 \section*{<< section.name >>}
 
 <! for queue in section.queues !>
-\begin{queue}{<< queue.name >>}{<< queue.date >><! if queue.isPartial !> \partialMark<! endif !><! if queue.isComplete !> \completeMark<! endif !>}
+\begin{minipage}{1.0\textwidth}
+<! if queue.url !>
+\href{<< queue.url >>}{\bfseries <<queue.name>>}\hfill
+<! else !>
+\textbf{<< queue.name >>}\hfill
+<! endif !>
+<< queue.date >><! if queue.isPartial !> \partialMark<! endif !><! if queue.isComplete !> \completeMark<! endif !>\\
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+\begin{fontspace}{1.5}{2}
 <! if queue.prevItem !>
-\previous{<< queue.prevItem >>}
+<! if queue.prevItem.url !>
+\href{<< queue.prevItem.url >>}{\previous{<< queue.previtem.name >>}}
+<! else !>
+\previous{<< queue.prevItem.name >>}
+<! endif !>
 <! else !>
 <! for item in queue.nextItems !>
-<< item >> <! if queue.isSplit !>\\<! endif !>
+<! if item.url !>
+\href{<< item.url >>}{<< item.name >>}
+<! else !>
+<< item.name >>
+<! endif !>
+<! if queue.isSplit !>\\<! endif !>
 <! endfor !>
 <! endif !>
-\end{queue}
+\end{fontspace}
+\end{minipage}
+\vspace{2em}
 
 <! endfor !>
 <! endfor !>
