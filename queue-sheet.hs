@@ -181,9 +181,6 @@ instance Ginger.ToGVal m Item where
     , "url"  ~> itemUrl
     ]
 
---instance TTC.Render Item where
---  render (Item t) = TTC.fromT t
-
 -- | Queue information
 data Queue
   = Queue
