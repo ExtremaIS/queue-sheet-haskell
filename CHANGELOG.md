@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Breaking
+
+* Add URL support
+
 ## 0.1.0.0 (2020-07-25)
 
 ### Breaking

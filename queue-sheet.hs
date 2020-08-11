@@ -92,7 +92,7 @@ defaultTemplate = "template.tex"
 ------------------------------------------------------------------------------
 -- $Types
 
--- | Name of a queue
+-- | Name of a queue or queue item
 newtype Name = Name Text
   deriving newtype Show
 
@@ -104,6 +104,19 @@ instance Ginger.ToGVal m Name where
 
 instance TTC.Render Name where
   render (Name t) = TTC.fromT t
+
+-- | URL of queue or queue item
+newtype Url = Url Text
+  deriving newtype Show
+
+instance FromJSON Url where
+  parseJSON = fmap Url . parseToString
+
+instance Ginger.ToGVal m Url where
+  toGVal (Url t) = Ginger.toGVal $ escapeTeX t
+
+instance TTC.Render Url where
+  render (Url t) = TTC.fromT t
 
 -- | Section used to organize queues
 newtype Section = Section Text
@@ -144,22 +157,38 @@ instance TTC.Render Date where
   render (Date t) = TTC.fromT t
 
 -- | Queue item
-newtype Item = Item Text
-  deriving newtype Show
+data Item
+  = Item
+    { itemName :: !Name
+    , itemUrl  :: !(Maybe Url)
+    }
+  deriving Show
 
 instance FromJSON Item where
-  parseJSON = fmap Item . parseToString
+  parseJSON = \case
+    (A.Object o) ->
+      Item
+        <$> o .:  "name"
+        <*> o .:? "url"
+    value ->
+      Item
+        <$> fmap Name (parseToString value)
+        <*> pure Nothing
 
 instance Ginger.ToGVal m Item where
-  toGVal (Item t) = Ginger.toGVal $ escapeTeX t
+  toGVal Item{..} = Ginger.dict
+    [ "name" ~> itemName
+    , "url"  ~> itemUrl
+    ]
 
-instance TTC.Render Item where
-  render (Item t) = TTC.fromT t
+--instance TTC.Render Item where
+--  render (Item t) = TTC.fromT t
 
 -- | Queue information
 data Queue
   = Queue
     { queueName    :: !Name
+    , queueUrl     :: !(Maybe Url)
     , queueSection :: !Section
     , queueSplit   :: !Bool
     , queueTags    :: ![Tag]
@@ -171,6 +200,7 @@ data Queue
 instance FromJSON Queue where
   parseJSON = A.withObject "Queue" $ \o -> do
     queueName    <- o .:  "name"
+    queueUrl     <- o .:? "url"
     queueSection <- o .:  "section"
     queueSplit   <- o .:? "split" .!= False
     queueTags    <- o .:? "tags" .!= []
@@ -262,6 +292,7 @@ loadQueuesYaml path = do
 data QueueCtx
   = QueueCtx
     { name       :: !Name
+    , url        :: !(Maybe Url)
     , isSplit    :: !Bool
     , isPartial  :: !Bool
     , isComplete :: !Bool
@@ -273,6 +304,7 @@ data QueueCtx
 instance Ginger.ToGVal m QueueCtx where
   toGVal QueueCtx{..} = Ginger.dict
     [ "name"       ~> name
+    , "url"        ~> url
     , "isSplit"    ~> isSplit
     , "isPartial"  ~> isPartial
     , "isComplete" ~> isComplete
@@ -285,6 +317,7 @@ instance Ginger.ToGVal m QueueCtx where
 queueCtx :: Queue -> QueueCtx
 queueCtx Queue{..} = QueueCtx
     { name       = queueName
+    , url        = queueUrl
     , isSplit    = queueSplit
     , isPartial  = TagPartial `elem` queueTags
     , isComplete = TagComplete `elem` queueTags
