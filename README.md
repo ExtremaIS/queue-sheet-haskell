@@ -15,10 +15,11 @@
 
 ## Overview
 
-Queue Sheet is a utility that builds PDFs of lists.  The printed PDFs can be
-used to track progress through the queues when offline.
+Queue Sheet is a utility that builds PDFs of lists.  Printed PDFs can be used
+to track progress when offline.  Optionally include URLs when sharing a PDF
+with others so that they can easily access the media.
 
-Use Queue Sheet to track progress through:
+Use Queue Sheet to track:
 
 * podcasts
 * research papers
