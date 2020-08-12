@@ -69,6 +69,9 @@ import Control.Monad.Trans.Writer (Writer)
 -- https://hackage.haskell.org/package/ttc
 import qualified Data.TTC as TTC
 
+-- https://hackage.haskell.org/package/vector
+import qualified Data.Vector as V
+
 -- https://hackage.haskell.org/package/yaml
 import qualified Data.Yaml as Yaml
 
@@ -223,10 +226,19 @@ data QueuesFile
   deriving Show
 
 instance FromJSON QueuesFile where
-  parseJSON = A.withObject "QueuesFile" $ \o ->
-    QueuesFile
-      <$> fmap ((:) defaultSection) (o .:? "sections" .!= [])
-      <*> o .: "queues"
+  parseJSON = \case
+    (A.Object o) ->
+      QueuesFile
+        <$> fmap ((:) defaultSection) (o .:? "sections" .!= [])
+        <*> o .: "queues"
+    (A.Array v) ->
+      QueuesFile
+        <$> pure [defaultSection]
+        <*> fmap V.toList (V.mapM parseJSON v)
+    A.String{} -> fail "unexpected string"
+    A.Number{} -> fail "unexpected number"
+    A.Bool{}   -> fail "unexpected bool"
+    A.Null     -> fail "unexpected null"
 
 ------------------------------------------------------------------------------
 -- $Library
