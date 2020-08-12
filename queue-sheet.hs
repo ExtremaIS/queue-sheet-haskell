@@ -26,8 +26,8 @@ import Data.Aeson (FromJSON(parseJSON), (.:), (.:?), (.!=))
 import qualified Data.Aeson.Types as AT
 
 -- https://hackage.haskell.org/package/base
-import Control.Applicative (optional)
-import Control.Monad (forM_, unless, when)
+import Control.Applicative ((<|>), optional)
+import Control.Monad (forM, forM_, unless, when)
 import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base (4,11,0)
 import Data.Monoid ((<>))
@@ -43,7 +43,7 @@ import System.Directory
   )
 
 -- https://hackage.haskell.org/package/filepath
-import System.FilePath ((</>), replaceExtension)
+import System.FilePath ((</>), replaceExtension, takeFileName)
 
 -- https://hackage.haskell.org/package/ginger
 import qualified Text.Ginger as Ginger
@@ -68,9 +68,6 @@ import Control.Monad.Trans.Writer (Writer)
 
 -- https://hackage.haskell.org/package/ttc
 import qualified Data.TTC as TTC
-
--- https://hackage.haskell.org/package/vector
-import qualified Data.Vector as V
 
 -- https://hackage.haskell.org/package/yaml
 import qualified Data.Yaml as Yaml
@@ -217,11 +214,35 @@ instance FromJSON Queue where
           (Nothing,   Nothing)    -> Nothing
     return Queue{..}
 
+-- | Import declaration
+data Import
+  = Import
+    { importPath    :: !FilePath
+    , importSection :: !(Maybe Section)
+    }
+  deriving Show
+
+instance FromJSON Import where
+  parseJSON = A.withObject "Import" $ \o -> do
+    importPath    <- o .:  "import"
+    importSection <- o .:? "section"
+    return Import{..}
+
+-- | Import declaration or queue information
+data ImportOrQueue
+  = IQImport !Import
+  | IQQueue  !Queue
+  deriving Show
+
+instance FromJSON ImportOrQueue where
+  parseJSON value =
+    (IQImport <$> parseJSON value) <|> (IQQueue <$> parseJSON value)
+
 -- | Queues file
 data QueuesFile
   = QueuesFile
-    { qfSections :: ![Section]
-    , qfQueues   :: ![Queue]
+    { qfSections       :: ![Section]
+    , qfImportOrQueues :: ![ImportOrQueue]
     }
   deriving Show
 
@@ -229,16 +250,24 @@ instance FromJSON QueuesFile where
   parseJSON = \case
     (A.Object o) -> do
       qfSections <- (:) defaultSection <$> (o .:? "sections" .!= [])
-      qfQueues   <- o .: "queues"
+      qfImportOrQueues <- o .: "queues"
       return QueuesFile{..}
-    (A.Array v) -> do
+    a@A.Array{} -> do
       let qfSections = [defaultSection]
-      qfQueues <- V.toList <$> V.mapM parseJSON v
+      qfImportOrQueues <- parseJSON a
       return QueuesFile{..}
     A.String{} -> fail "unexpected string"
     A.Number{} -> fail "unexpected number"
     A.Bool{}   -> fail "unexpected bool"
     A.Null     -> fail "unexpected null"
+
+-- | Queue sheet
+data QueueSheet
+  = QueueSheet
+    { qsSections :: ![Section]
+    , qsQueues   :: ![Queue]
+    }
+  deriving Show
 
 ------------------------------------------------------------------------------
 -- $Library
@@ -286,19 +315,52 @@ escapeTeX = T.foldl go ""
 ------------------------------------------------------------------------------
 -- $Yaml
 
--- | Load @queues.yaml@
-loadQueuesYaml :: FilePath -> IO QueuesFile
-loadQueuesYaml path = do
-    let yamlError = errorExit
-                  . (("error loading " ++ path ++ ": ") ++)
-                  . Yaml.prettyPrintParseException
-    qf@QueuesFile{..} <- either yamlError pure =<< Yaml.decodeFileEither path
-    forM_ qfQueues $ \Queue{..} ->
-      unless (queueSection `elem` qfSections) . errorExit . unwords $
-        [ "queue", TTC.render queueName
-        , "has unknown section", TTC.render queueSection
-        ]
-    return qf
+-- | Load a queues YAML file, resolving imports
+loadQueuesYaml :: FilePath -> IO QueueSheet
+loadQueuesYaml = go []
+  where
+    go :: [FilePath] -> FilePath -> IO QueueSheet
+    go seenPaths path = do
+      let error' = errorExit . (("error loading " ++ path ++ ": ") ++)
+      let yamlError = error' . Yaml.prettyPrintParseException
+      QueuesFile{..} <- either yamlError pure =<< Yaml.decodeFileEither path
+      queues <- fmap concat . forM qfImportOrQueues $ \case
+        IQImport Import{..}-> do
+          let seenPaths' = takeFileName path : seenPaths
+              importFileName = takeFileName importPath
+          when (importFileName `elem` seenPaths') . error' $
+            "cyclic import: " ++ importFileName
+          queueSheet <- go seenPaths' importPath
+          case importSection of
+            Just section -> do
+              unless (section `elem` qfSections) . error' . unwords $
+                [ "import", importPath
+                , "has unknown section", TTC.render section
+                ]
+              return
+                [ queue
+                    { queueSection = section
+                    }
+                | queue <- qsQueues queueSheet
+                ]
+            Nothing -> do
+              forM_ (qsQueues queueSheet) $ \Queue{..} ->
+                unless (queueSection `elem` qfSections) . error' . unwords $
+                  [ "queue", TTC.render queueName
+                  , "imported from", importPath
+                  , "has unknown section", TTC.render queueSection
+                  ]
+              return $ qsQueues queueSheet
+        IQQueue queue@Queue{..} -> do
+          unless (queueSection `elem` qfSections) . error' . unwords $
+            [ "queue", TTC.render queueName
+            , "has unknown section", TTC.render queueSection
+            ]
+          return [queue]
+      return $ QueueSheet
+        { qsSections = qfSections
+        , qsQueues   = queues
+        }
 
 ------------------------------------------------------------------------------
 -- $Template
@@ -484,7 +546,7 @@ parseOptions = OA.execParser
 main :: IO ()
 main = do
     Options{..} <- parseOptions
-    QueuesFile{..} <- loadQueuesYaml optQueues
+    QueueSheet{..} <- loadQueuesYaml optQueues
     template <- loadTemplate optTemplate
     exists <- doesPathExist buildDir
     when exists . errorExit $ "directory already exists: " ++ buildDir
@@ -492,7 +554,7 @@ main = do
         texFile = replaceExtension pdfFile "tex"
     createDirectory buildDir
     withCurrentDirectory buildDir $ do
-      renderTemplate texFile template $ context qfSections qfQueues
+      renderTemplate texFile template $ context qsSections qsQueues
       build texFile
     renameFile (buildDir </> pdfFile) pdfFile
     removeDirectoryRecursive buildDir

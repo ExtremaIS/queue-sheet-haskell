@@ -49,7 +49,6 @@ executable queue-sheet
     , text
     , transformers
     , ttc
-    , vector
     , yaml
   default-language: Haskell2010
   ghc-options: -Wall
