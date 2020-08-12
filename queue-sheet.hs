@@ -173,14 +173,14 @@ data Item
 
 instance FromJSON Item where
   parseJSON = \case
-    (A.Object o) ->
-      Item
-        <$> o .:  "name"
-        <*> o .:? "url"
-    value ->
-      Item
-        <$> fmap Name (parseToString value)
-        <*> pure Nothing
+    (A.Object o) -> do
+      itemName <- o .:  "name"
+      itemUrl  <- o .:? "url"
+      return Item{..}
+    value -> do
+      itemName <- Name <$> parseToString value
+      let itemUrl = Nothing
+      return Item{..}
 
 instance Ginger.ToGVal m Item where
   toGVal Item{..} = Ginger.dict
@@ -227,14 +227,14 @@ data QueuesFile
 
 instance FromJSON QueuesFile where
   parseJSON = \case
-    (A.Object o) ->
-      QueuesFile
-        <$> fmap ((:) defaultSection) (o .:? "sections" .!= [])
-        <*> o .: "queues"
-    (A.Array v) ->
-      QueuesFile
-        <$> pure [defaultSection]
-        <*> fmap V.toList (V.mapM parseJSON v)
+    (A.Object o) -> do
+      qfSections <- (:) defaultSection <$> (o .:? "sections" .!= [])
+      qfQueues   <- o .: "queues"
+      return QueuesFile{..}
+    (A.Array v) -> do
+      let qfSections = [defaultSection]
+      qfQueues <- V.toList <$> V.mapM parseJSON v
+      return QueuesFile{..}
     A.String{} -> fail "unexpected string"
     A.Number{} -> fail "unexpected number"
     A.Bool{}   -> fail "unexpected bool"
