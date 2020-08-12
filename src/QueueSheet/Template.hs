@@ -1,0 +1,176 @@
+------------------------------------------------------------------------------
+-- |
+-- Module      : QueueSheet.Template
+-- Description : queue sheet template functions
+-- Copyright   : Copyright (c) 2020 Travis Cardwell
+-- License     : MIT
+------------------------------------------------------------------------------
+
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
+
+module QueueSheet.Template
+  ( -- * API
+    loadTemplate
+  , renderTemplate
+  ) where
+
+-- https://hackage.haskell.org/package/base
+import Data.Bifunctor (first)
+import qualified System.IO as IO
+
+-- https://hackage.haskell.org/package/ginger
+import qualified Text.Ginger as Ginger
+import Text.Ginger ((~>))
+
+-- https://hackage.haskell.org/package/text
+import Data.Text (Text)
+import qualified Data.Text.IO as TIO
+
+-- https://hackage.haskell.org/package/transformers
+import Control.Monad.Trans.Writer (Writer)
+
+-- (queue-sheet)
+import QueueSheet.Types
+  ( Date, Item, Name
+  , Queue
+      ( Queue, queueDate, queueItems, queueName, queueSection, queueSplit
+      , queueTags, queueUrl
+      )
+  , QueueSheet(QueueSheet, qsQueues, qsSections), Section
+  , Tag(TagComplete, TagPartial), Url
+  )
+
+------------------------------------------------------------------------------
+-- $QueueCtx
+
+-- | Queue context
+data QueueCtx
+  = QueueCtx
+    { name       :: !Name
+    , url        :: !(Maybe Url)
+    , isSplit    :: !Bool
+    , isPartial  :: !Bool
+    , isComplete :: !Bool
+    , date       :: !(Maybe Date)
+    , prevItem   :: !(Maybe Item)
+    , nextItems  :: ![Item]
+    }
+
+instance Ginger.ToGVal m QueueCtx where
+  toGVal QueueCtx{..} = Ginger.dict
+    [ "name"       ~> name
+    , "url"        ~> url
+    , "isSplit"    ~> isSplit
+    , "isPartial"  ~> isPartial
+    , "isComplete" ~> isComplete
+    , "date"       ~> date
+    , "prevItem"   ~> prevItem
+    , "nextItems"  ~> nextItems
+    ]
+
+-- | Construct a queue context
+queueCtx :: Queue -> QueueCtx
+queueCtx Queue{..} = QueueCtx
+    { name       = queueName
+    , url        = queueUrl
+    , isSplit    = queueSplit
+    , isPartial  = TagPartial `elem` queueTags
+    , isComplete = TagComplete `elem` queueTags
+    , date       = queueDate
+    , prevItem   = either Just (const Nothing) =<< queueItems
+    , nextItems  = maybe [] (either (const []) id) queueItems
+    }
+
+------------------------------------------------------------------------------
+-- $SectionCtx
+
+-- | Section context
+newtype SectionCtx = SectionCtx (Section, [QueueCtx])
+
+instance Ginger.ToGVal m SectionCtx where
+  toGVal (SectionCtx (section, queues)) = Ginger.dict
+    [ "name"   ~> section
+    , "queues" ~> queues
+    ]
+
+-- | Check if a section context has any queues
+sectionCtxHasQueues :: SectionCtx -> Bool
+sectionCtxHasQueues (SectionCtx (_, [])) = False
+sectionCtxHasQueues _                    = True
+
+------------------------------------------------------------------------------
+-- $Context
+
+-- | Template context
+newtype Context = Context [SectionCtx]
+  deriving newtype (Ginger.ToGVal m)
+
+-- | Template context constructor
+context :: [Section] -> [Queue] -> Context
+context sections queues = Context $ filter sectionCtxHasQueues
+    [ SectionCtx
+        ( section
+        , [ queueCtx queue
+          | queue <- queues, queueSection queue == section
+          ]
+        )
+    | section <- sections
+    ]
+
+-- | Create a Ginger context from a template context
+gingerContext
+  :: Context
+  -> Ginger.GingerContext Ginger.SourcePos (Writer Text) Text
+gingerContext ctx = Ginger.makeContextText $ \case
+    "sections" -> Ginger.toGVal ctx
+    _          -> Ginger.toGVal (Nothing :: Maybe Text)
+
+------------------------------------------------------------------------------
+-- $API
+
+-- | Load a Ginger template
+loadTemplate
+  :: FilePath
+  -> IO (Either String (Ginger.Template Ginger.SourcePos))
+loadTemplate path = first formatError <$> Ginger.parseGingerFile' options path
+  where
+    options :: Ginger.ParserOptions IO
+    options = Ginger.ParserOptions
+      { poIncludeResolver     = fmap Just . IO.readFile
+      , poSourceName          = Nothing
+      , poKeepTrailingNewline = False
+      , poLStripBlocks        = False
+      , poTrimBlocks          = False
+      , poDelimiters          = Ginger.Delimiters
+          { delimOpenInterpolation  = "<<"
+          , delimCloseInterpolation = ">>"
+          , delimOpenTag            = "<!"
+          , delimCloseTag           = "!>"
+          , delimOpenComment        = "<#"
+          , delimCloseComment       = "#>"
+          }
+      }
+
+    formatError :: Ginger.ParserError -> String
+    formatError err = concat
+      [ "error loading template: "
+      , maybe path show $ Ginger.peSourcePosition err
+      , ": "
+      , Ginger.peErrorMessage err
+      ]
+
+-- | Render a template using the given context
+renderTemplate
+  :: FilePath
+  -> Ginger.Template Ginger.SourcePos
+  -> QueueSheet
+  -> IO ()
+renderTemplate path template QueueSheet{..} =
+    let ctx = gingerContext $ context qsSections qsQueues
+    in  TIO.writeFile path $ Ginger.runGinger ctx template

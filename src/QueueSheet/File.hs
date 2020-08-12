@@ -1,0 +1,109 @@
+------------------------------------------------------------------------------
+-- |
+-- Module      : QueueSheet.File
+-- Description : queue sheet file loading
+-- Copyright   : Copyright (c) 2020 Travis Cardwell
+-- License     : MIT
+------------------------------------------------------------------------------
+
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+module QueueSheet.File
+  ( -- * YAML
+    loadYaml
+  , loadYaml'
+  ) where
+
+-- https://hackage.haskell.org/package/base
+import Control.Exception (displayException)
+import Control.Monad (forM, forM_, unless, when)
+import Data.Bifunctor (first)
+import System.IO.Error (tryIOError)
+
+-- https://hackage.haskell.org/package/bytestring
+import qualified Data.ByteString as BS
+import Data.ByteString (ByteString)
+
+-- https://hackage.haskell.org/package/filepath
+import System.FilePath (takeFileName)
+
+-- https://hackage.haskell.org/package/transformers
+import Control.Monad.Trans.Except (ExceptT(ExceptT), runExceptT, throwE)
+
+-- https://hackage.haskell.org/package/ttc
+import qualified Data.TTC as TTC
+
+-- https://hackage.haskell.org/package/yaml
+import qualified Data.Yaml as Yaml
+
+-- (queue-sheet)
+import QueueSheet.Types
+  ( Import(Import, importPath, importSection)
+  , ImportOrQueue(IQImport, IQQueue)
+  , Queue(Queue, queueName, queueSection)
+  , QueuesFile(QueuesFile, qfSections, qfImportOrQueues)
+  , QueueSheet(QueueSheet, qsSections, qsQueues)
+  )
+
+------------------------------------------------------------------------------
+-- $Yaml
+
+-- | Load a queues YAML file, resolving imports
+loadYaml
+  :: FilePath
+  -> IO (Either String QueueSheet)
+loadYaml =
+    loadYaml' (fmap (first displayException) . tryIOError . BS.readFile)
+
+-- | Load a queues YAML file using the given file loader, resolving imports
+--
+-- This function defines the logic for 'loadYaml' using an arbitrary monad.
+-- It is exposed for testing purposes.
+loadYaml'
+  :: forall m. Monad m
+  => (FilePath -> m (Either String ByteString))  -- ^ file loader
+  -> FilePath
+  -> m (Either String QueueSheet)
+loadYaml' loadFile = runExceptT . go []
+  where
+    go :: [FilePath] -> FilePath -> ExceptT String m QueueSheet
+    go seenPaths path = do
+      let error' = throwE . (("error loading " ++ path ++ ": ") ++)
+          yamlError = error' . Yaml.prettyPrintParseException
+      content <- ExceptT $ loadFile path
+      QueuesFile{..} <- either yamlError pure $ Yaml.decodeEither' content
+      queues <- fmap concat . forM qfImportOrQueues $ \case
+        IQImport Import{..} -> do
+          let seenPaths' = takeFileName path : seenPaths
+              importFileName = takeFileName importPath
+          when (importFileName `elem` seenPaths') . error' $
+            "cyclic import: " ++ importFileName
+          queueSheet <- go seenPaths' importPath
+          let queues' = qsQueues queueSheet
+          case importSection of
+            Just section -> do
+              unless (section `elem` qfSections) . error' . unwords $
+                [ "import", importPath
+                , "has unknown section", TTC.render section
+                ]
+              return [queue{ queueSection = section } | queue <- queues']
+            Nothing -> do
+              forM_ queues' $ \Queue{..} ->
+                unless (queueSection `elem` qfSections) . error' . unwords $
+                  [ "queue", TTC.render queueName
+                  , "imported from", importPath
+                  , "has unknown section", TTC.render queueSection
+                  ]
+              return queues'
+        IQQueue queue@Queue{..} -> do
+          unless (queueSection `elem` qfSections) . error' . unwords $
+            [ "queue", TTC.render queueName
+            , "has unknown section", TTC.render queueSection
+            ]
+          return [queue]
+      return $ QueueSheet
+        { qsSections = qfSections
+        , qsQueues   = queues
+        }
