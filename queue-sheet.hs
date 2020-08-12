@@ -131,6 +131,10 @@ instance Ginger.ToGVal m Section where
 instance TTC.Render Section where
   render (Section t) = TTC.fromT t
 
+-- | The default section is represented as an empty string
+defaultSection :: Section
+defaultSection = Section ""
+
 -- | Queue tag
 data Tag
   = TagPartial
@@ -198,9 +202,9 @@ instance FromJSON Queue where
   parseJSON = A.withObject "Queue" $ \o -> do
     queueName    <- o .:  "name"
     queueUrl     <- o .:? "url"
-    queueSection <- o .:  "section"
-    queueSplit   <- o .:? "split" .!= False
-    queueTags    <- o .:? "tags" .!= []
+    queueSection <- o .:? "section" .!= defaultSection
+    queueSplit   <- o .:? "split"   .!= False
+    queueTags    <- o .:? "tags"    .!= []
     queueDate    <- o .:? "date"
     mPrevItem    <- o .:? "prev"
     mNextItems   <- o .:? "next"
@@ -221,7 +225,7 @@ data QueuesFile
 instance FromJSON QueuesFile where
   parseJSON = A.withObject "QueuesFile" $ \o ->
     QueuesFile
-      <$> o .: "sections"
+      <$> fmap ((:) defaultSection) (o .:? "sections" .!= [])
       <*> o .: "queues"
 
 ------------------------------------------------------------------------------
@@ -235,17 +239,19 @@ errorExit msg = do
 
 -- | Parse any scalar value as a string
 --
--- Strings, numbers, booleans, and null are parsed as a string.  Arrays and
--- objects result in an error.
+-- Strings, numbers, booleans, and null are parsed as a string.  Empty
+-- strings, arrays, and objects result in an error.
 parseToString :: A.Value -> AT.Parser Text
 parseToString = \case
-    (A.String s) -> pure s
-    (A.Number n) -> pure . T.pack . either (show @Double) (show @Integer) $
-                      Sci.floatingOrInteger n
-    (A.Bool b)   -> pure $ if b then "true" else "false"
-    A.Null       -> pure "null"
-    A.Array{}    -> fail "unexpected array"
-    A.Object{}   -> fail "unexpected object"
+    (A.String t)
+      | T.null t  -> fail "empty string"
+      | otherwise -> pure t
+    (A.Number n)  -> pure . T.pack . either (show @Double) (show @Integer) $
+      Sci.floatingOrInteger n
+    (A.Bool b)    -> pure $ if b then "true" else "false"
+    A.Null        -> pure "null"
+    A.Array{}     -> fail "unexpected array"
+    A.Object{}    -> fail "unexpected object"
 
 -- | Escape a string for inclusion in a TeX document
 escapeTeX :: Text -> Text
@@ -332,13 +338,18 @@ instance Ginger.ToGVal m SectionCtx where
     , "queues" ~> queues
     ]
 
+-- | Check if a section context has any queues
+sectionCtxHasQueues :: SectionCtx -> Bool
+sectionCtxHasQueues (SectionCtx (_, [])) = False
+sectionCtxHasQueues _                    = True
+
 -- | Template context
 newtype Context = Context [SectionCtx]
   deriving newtype (Ginger.ToGVal m)
 
 -- | Template context constructor
 context :: [Section] -> [Queue] -> Context
-context sections queues = Context
+context sections queues = Context $ filter sectionCtxHasQueues
     [ SectionCtx
         ( section
         , [ queueCtx queue
