@@ -72,7 +72,7 @@ import qualified Data.TTC as TTC
 
 -- | Name of a queue or queue item
 newtype Name = Name Text
-  deriving newtype Show
+  deriving newtype (Eq, Show)
 
 instance FromJSON Name where
   parseJSON = fmap Name . parseToString
@@ -88,7 +88,7 @@ instance TTC.Render Name where
 
 -- | URL of queue or queue item
 newtype Url = Url Text
-  deriving newtype Show
+  deriving newtype (Eq, Show)
 
 instance FromJSON Url where
   parseJSON = fmap Url . parseToString
@@ -139,7 +139,7 @@ instance FromJSON Tag where
 
 -- | Date of last queue update
 newtype Date = Date Text
-  deriving newtype Show
+  deriving newtype (Eq, Show)
 
 instance FromJSON Date where
   parseJSON = fmap Date . parseToString
@@ -159,7 +159,7 @@ data Item
     { itemName :: !Name
     , itemUrl  :: !(Maybe Url)
     }
-  deriving Show
+  deriving (Eq, Show)
 
 instance FromJSON Item where
   parseJSON = \case
@@ -192,7 +192,7 @@ data Queue
     , queueDate    :: !(Maybe Date)
     , queueItems   :: !(Maybe (Either Item [Item]))
     }
-  deriving Show
+  deriving (Eq, Show)
 
 instance FromJSON Queue where
   parseJSON = A.withObject "Queue" $ \o -> do
@@ -219,7 +219,7 @@ data Import
     { importPath    :: !FilePath
     , importSection :: !(Maybe Section)
     }
-  deriving Show
+  deriving (Eq, Show)
 
 instance FromJSON Import where
   parseJSON = A.withObject "Import" $ \o -> do
@@ -234,7 +234,7 @@ instance FromJSON Import where
 data ImportOrQueue
   = IQImport !Import
   | IQQueue  !Queue
-  deriving Show
+  deriving (Eq, Show)
 
 instance FromJSON ImportOrQueue where
   parseJSON value =
@@ -249,7 +249,7 @@ data QueuesFile
     { qfSections       :: ![Section]
     , qfImportOrQueues :: ![ImportOrQueue]
     }
-  deriving Show
+  deriving (Eq, Show)
 
 instance FromJSON QueuesFile where
   parseJSON = \case
@@ -275,7 +275,7 @@ data QueueSheet
     { qsSections :: ![Section]
     , qsQueues   :: ![Queue]
     }
-  deriving Show
+  deriving (Eq, Show)
 
 ------------------------------------------------------------------------------
 -- $Library
