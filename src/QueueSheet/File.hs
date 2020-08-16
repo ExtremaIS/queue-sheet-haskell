@@ -26,8 +26,11 @@ import System.IO.Error (tryIOError)
 import qualified Data.ByteString as BS
 import Data.ByteString (ByteString)
 
+-- https://hackage.haskell.org/package/directory
+import System.Directory (makeAbsolute)
+
 -- https://hackage.haskell.org/package/filepath
-import System.FilePath (takeFileName)
+import System.FilePath ((</>), isAbsolute, normalise, takeDirectory)
 
 -- https://hackage.haskell.org/package/transformers
 import Control.Monad.Trans.Except (ExceptT(ExceptT), runExceptT, throwE)
@@ -54,8 +57,10 @@ import QueueSheet.Types
 loadYaml
   :: FilePath
   -> IO (Either String QueueSheet)
-loadYaml =
-    loadYaml' (fmap (first displayException) . tryIOError . BS.readFile)
+loadYaml path = runExceptT $ do
+    let tryIOError' = fmap (first displayException) . tryIOError
+    absPath <- ExceptT . tryIOError' $ makeAbsolute path
+    ExceptT $ loadYaml' (tryIOError' . BS.readFile) absPath
 
 -- | Load a queues YAML file using the given file loader, resolving imports
 --
@@ -64,7 +69,7 @@ loadYaml =
 loadYaml'
   :: forall m. Monad m
   => (FilePath -> m (Either String ByteString))  -- ^ file loader
-  -> FilePath
+  -> FilePath                                    -- ^ absolute path
   -> m (Either String QueueSheet)
 loadYaml' loadFile = runExceptT . go []
   where
@@ -76,11 +81,13 @@ loadYaml' loadFile = runExceptT . go []
       QueuesFile{..} <- either yamlError pure $ Yaml.decodeEither' content
       queues <- fmap concat . forM qfImportOrQueues $ \case
         IQImport Import{..} -> do
-          let seenPaths' = takeFileName path : seenPaths
-              importFileName = takeFileName importPath
-          when (importFileName `elem` seenPaths') . error' $
-            "cyclic import: " ++ importFileName
-          queueSheet <- go seenPaths' importPath
+          let seenPaths' = path : seenPaths
+              importAbsPath
+                | isAbsolute importPath = importPath
+                | otherwise = normalise $ takeDirectory path </> importPath
+          when (importAbsPath `elem` seenPaths') . error' $
+            "cyclic import: " ++ importAbsPath
+          queueSheet <- go seenPaths' importAbsPath
           let queues' = qsQueues queueSheet
           case importSection of
             Just section -> do
