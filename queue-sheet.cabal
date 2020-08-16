@@ -74,7 +74,13 @@ test-suite queue-sheet-test
   type: exitcode-stdio-1.0
   hs-source-dirs: test
   main-is: Spec.hs
+  other-modules:
+      QueueSheet.File.Test
   build-depends:
       base
+    , bytestring
+    , queue-sheet
+    , tasty
+    , tasty-hunit
   default-language: Haskell2010
   ghc-options: -Wall

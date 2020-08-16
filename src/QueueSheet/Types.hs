@@ -18,16 +18,16 @@
 
 module QueueSheet.Types
   ( -- * Name
-    Name
+    Name(..)
     -- * Url
-  , Url
+  , Url(..)
     -- * Section
-  , Section
+  , Section(..)
   , defaultSection
     -- * Tag
   , Tag(..)
     -- * Date
-  , Date
+  , Date(..)
     -- * Item
   , Item(..)
     -- * Queue
