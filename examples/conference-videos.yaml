@@ -1,0 +1,11 @@
+---
+
+sections:
+  - Haskell
+
+queues:
+
+  - import: haskell-love-2020.yaml
+    section: Haskell
+  - import: zurihac-2020.yaml
+    section: Haskell

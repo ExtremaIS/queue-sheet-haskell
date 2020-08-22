@@ -9,62 +9,64 @@ queues:
 
   - name: AI Podcast
     url: https://lexfridman.com/ai/
+    date: 2020-08-20
     section: Other
-    date: 2020-08-09
     next:
-      - name: 114
-        url: https://lexfridman.com/russ-tedrake/
+      - name: 117
+        url: https://lexfridman.com/sheldon-solomon
 
   - name: Changelog
     url: https://changelog.com/podcast
+    date: 2020-08-12
     section: Programming
     tags:
       - partial
-    date: 2020-08-07
     next:
-      - 407
+      - 408
 
   - name: Co-Recursive
     url: https://corecursive.com/
-    section: Functional
     date: 2020-08-03
+    section: Functional
     prev: 55
 
   - name: Functional Geekery
     url: https://www.functionalgeekery.com/
-    section: Functional
     date: 2020-05-19
+    section: Functional
     prev: 131
 
   - name: Haskell Weekly
     url: https://haskellweekly.news/podcast.html
-    section: Functional
     date: 2019-11-08
+    section: Functional
     prev: 24
 
   - name: LambdaCast
     url: https://soundcloud.com/lambda-cast
-    section: Functional
     date: 2019-06-14
+    section: Functional
     prev: 22
 
   - name: Mindscape
     url: https://www.preposterousuniverse.com/podcast/
+    date: 2020-08-17
     section: Other
-    date: 2020-08-10
     next:
       - 108
       - 109
+      - 110
 
   - name: Quanta
     url: https://www.quantamagazine.org/tag/podcast/
+    date: 2020-08-12
     section: Other
-    prev: 142
+    prev: 143
 
   - name: Software Engineering Radio
     url: https://www.se-radio.net/
+    date: 2020-08-18
     section: Programming
     tags:
       - partial
-    date: 2020-08-06
-    prev: 420
+    prev: 422

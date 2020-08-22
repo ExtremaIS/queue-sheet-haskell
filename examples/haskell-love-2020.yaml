@@ -1,0 +1,70 @@
+---
+
+- name: "Haskell Love 2020"
+  url: https://www.youtube.com/playlist?list=PLBqWQH1MiwBSK9wuaATNS701c43VYVTuc
+  date: 2020-08-13
+  tags:
+    - split
+  next:
+    - name: "aeson-schemas: Safely extract JSON data when data types are too cumbersome"
+      url: https://www.youtube.com/watch?v=vJQtEa_7O3Q
+    - name: "Agile generation of Cloud API bindings with Haskell"
+      url: https://www.youtube.com/watch?v=KY27LsV11Rg
+    - name: "Bit vectors without compromises"
+      url: https://www.youtube.com/watch?v=HhpH8DKFBls
+    - name: "Building a web library using super hard Haskell"
+      url: https://www.youtube.com/watch?v=icgl9FuPxKA
+    - name: "The clear path to Haskell complexities"
+      url: https://www.youtube.com/watch?v=n3H_YipBDrY
+    - name: "Compiling gracefully"
+      url: https://www.youtube.com/watch?v=wvQbpS6wBa0
+    - name: "Concurrent applications with Free monads and STM"
+      url: https://www.youtube.com/watch?v=c-A46L8__IY
+    - name: "Context Is Everything*"
+      url: https://www.youtube.com/watch?v=Ujx4a8xVOSM
+    - name: "Data vs Control: a tale of two functors"
+      url: https://www.youtube.com/watch?v=gm2pK01S8_g
+    - name: "A Dominion of Domains"
+      url: https://www.youtube.com/watch?v=0aBWXqiuKR4
+    - name: "Down to the wire"
+      url: https://www.youtube.com/watch?v=b3wRqlEc6ts
+    - name: "Elastic sheet-defined functions"
+      url: https://www.youtube.com/watch?v=jH2Je6wUvPs
+    - name: "Getting acquainted with Lens"
+      url: https://www.youtube.com/watch?v=LBiFYbQMAXc
+    - name: "GraphQL :heart: Haskell"
+      url: https://www.youtube.com/watch?v=JbeqwfZ2dRc
+    - name: "Haskell to Core: Understanding Haskell Features Through Their Desugaring"
+      url: https://www.youtube.com/watch?v=fty9QL4aSRc
+    - name: "How to design co-programs"
+      url: https://www.youtube.com/watch?v=w2XCnbLBHmw
+    - name: "How to market Haskell to a mainstream programmer"
+      url: https://www.youtube.com/watch?v=fNpsgTIpODA
+    - name: "Hulk SMASH: re-imagining the Maybe-monad and its design space"
+      url: https://www.youtube.com/watch?v=4aQlFMvKgdc
+    - name: "Lightning talk"
+      url: https://www.youtube.com/watch?v=8BGaw4FF2aY
+    - name: "The many faces of isOrderedTree"
+      url: https://www.youtube.com/watch?v=5-P0Jjku3cY
+    - name: "Parameters of Many Flavors"
+      url: https://www.youtube.com/watch?v=hkus92CX32A
+    - name: "Propositions as Types"
+      url: https://www.youtube.com/watch?v=ru20eaMYbDo
+    - name: "Quotient Types + Behavioral Reflection = ?"
+      url: https://www.youtube.com/watch?v=ljpE7NOb2Qg
+    - name: "Reasoning under Uncertainty"
+      url: https://www.youtube.com/watch?v=LHlZNYFraAs
+    - name: "Replacing functions with data"
+      url: https://www.youtube.com/watch?v=wppzFzzD4b8
+    - name: "Stacks and queues with amortized logarithmic-time operations"
+      url: https://www.youtube.com/watch?v=FY_InObfG2I
+    - name: "Stan - Haskell Static Analyser"
+      url: https://www.youtube.com/watch?v=wb5PLv6-e6I
+    - name: "Technique for writing debuggable Haskell functions"
+      url: https://www.youtube.com/watch?v=kjS1Fv4AXog
+    - name: "Thinking in Properties"
+      url: https://www.youtube.com/watch?v=PcOcgMm8_4s
+    - name: "Writing 2D games using super simple Haskell"
+      url: https://www.youtube.com/watch?v=CfaCfQstBIM
+    - name: "Zero-Overhead Abstractions in Haskell using Staging"
+      url: https://www.youtube.com/watch?v=2uD6bCbL1-A
