@@ -61,11 +61,11 @@ data QueueCtx
 
 instance Ginger.ToGVal m QueueCtx where
   toGVal QueueCtx{..} = Ginger.dict $
-    [ "name"      ~> name
-    , "url"       ~> url
-    , "date"      ~> date
-    , "prevItem"  ~> prevItem
-    , "nextItems" ~> nextItems
+    [ "name"       ~> name
+    , "url"        ~> url
+    , "date"       ~> date
+    , "prev_item"  ~> prevItem
+    , "next_items" ~> nextItems
     ] ++ [("tag_" <> tag) ~> True | Tag tag <- tags]
 
 -- | Construct a queue context
