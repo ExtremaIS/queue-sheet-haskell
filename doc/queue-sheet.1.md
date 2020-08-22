@@ -15,7 +15,7 @@ hyphenate: false
 # DESCRIPTION
 
 Queue Sheet is a utility that builds PDFs of lists.  The printed PDFs can be
-used to track progress through the queues when offline.
+used to track progress through queues when offline.
 
 # OPTIONS
 
@@ -34,48 +34,55 @@ used to track progress through the queues when offline.
 # ARGUMENTS
 
 *QUEUES.yaml*
-:   YAML file specifying queue information
+:   queue file
 
 # FILES
 
 ## `QUEUES.yaml`
 
-This file is an object with two properties.
+A queue is a named list of items.  For example, a podcast can be represented
+as a queue where the queue name is the name of the podcast and each item in
+the queue is an episode of the podcast.  Queues can optionally be organized
+into sections.  For example, sections can be used to organize podcast queues
+by theme.
 
-The *sections* property is a list of section names (strings).  Note that the
-order determines the order in the output.
+Queues are specified in YAML format.  They may be specified in a few different
+ways, depending on how you want to organize them.
 
-The *queues* property is a list of queue objects with the following
-properties:
+To create a queue sheet of queues without sections, the YAML file consists of
+a list of queue objects, which have the following properties:
 
 *name*
-:   name of the queue (string, required)
+:   queue name (string, required)
 
 *url*
 :   queue URL (string, optional)
 
-*section*
-:   name of the section (string, required)
-
-*split*
-:   *true* to display items on separate lines (boolean, default *false*)
+*date*
+:   date of last update (string, optional)
 
 *tags*
 :   list of tags (list of string, optional)
 
-*date*
-:   date of last update (string, optional)
-
 *prev*
-:   previous (complete) item (item, optional)
+:   previous item (item, optional)
 
 *next*
 :   list of next items (list of items, optional)
 
-If both *prev* and *next* are specified, then *prev* is ignored.
+The only required property is *name*.
 
-An item name may be specified using a string.  To associate a URL with an
-item, use an object with the following properties:
+The *tags* property is a list of string tags that are associated with the
+queue.  A tag must consist of at least one ASCII letter, number, period,
+underscore, or dash.  For example, tag "complete" can be used to indicate that
+there will be no new episodes of a podcast that is complete.
+
+The *next* property is a list of next items in the queue.  When the list is
+exhausted, the previous item can be specified using the *prev* property.  If
+both *prev* and *next* are specified, *prev* is ignored.
+
+Items can be specified by name only, using a string or a number.  To associate
+a URL with an item, use an object with the following properties:
 
 *name*
 :   name of the item (string, required)
@@ -83,18 +90,49 @@ item, use an object with the following properties:
 *url*
 :   item URL (string, optional)
 
-The following tags are supported:
+To organize queues into sections, the YAML file should be written as an object
+with two properties:
 
-*complete*
-:   no new items will be added to the queue
+*sections*
+:   list of sections names (optional)
 
-*partial*
-:   not all items of the source queue are added to the queue
+*queues*
+:   list of queue objects (required)
+
+Sections names are specified using strings.  The order that the sections are
+listed determines the order that they are displayed on the queue sheet.
+
+Queue objects are as above, with an additional property to specify the
+section:
+
+*section*
+:   name of the section (string, optional)
+
+Queues that are not explicitly associated with a section are associated with
+an implicit default section.
+
+To make it easier to share queue files, imports are also supported.  Import
+another queue file using an import object instead of a queue object in a list
+of queues.  An import object has the following properties:
+
+*import*
+:   path to the queue file to import (string, required)
+
+*section*
+:   section to associate all of the imported queues with (string, optional)
+
+Paths are relative to the current file.  For example, simply specify the
+filename of the file to import when the file is in the same directory.
+
+When you specify *section*, the section must be defined in the current file.
+When you do not specify *section*, the sections of the imported queues are
+used, but they must also be defined in the current file.
 
 ## Template
 
-A LaTeX template is used to build the PDF, using XeTeX.  Unless specified
-otherwise, `template.tex` is used.
+YAML files specify the data, and templates determine how that data is
+displayed.  A LaTeX template is used to build the PDF, using XeTeX.  Unless
+specified otherwise, `template.tex` is used.
 
 It is a Jinja2-style template using the following syntax:
 
@@ -102,7 +140,7 @@ Interpolations
 :   `<< section.name >>`
 
 Tags
-:   `<! if queue.isSplit !>`
+:   `<! if section.name !>`
 
 Comments
 :   `<# comment #>`
@@ -120,6 +158,9 @@ A section is an object with the following properties:
 *queues*
 :   list of queues
 
+Only sections that contain queues are passed to the template.  The *name*
+property of the default section is empty.
+
 A queue is an object with the following properties:
 
 *name*
@@ -128,23 +169,17 @@ A queue is an object with the following properties:
 *url*
 :   queue URL or empty string if no URL (string)
 
-*isSplit*
-:   *true* to display items on separate lines (boolean)
-
-*isPartial*
-:   *true* if the partial tag is set (boolean)
-
-*isComplete*
-:   *true* if the complete tag is set (boolean)
-
 *date*
 :   date or empty string if no date (string)
 
-*prevItem*
+*prev_item*
 :   previous item or empty string if not set (item)
 
-*nextItems*
+*next_items*
 :   list of next items (list of items)
+
+Queue tags are exposed as boolean properties prefixed with "tag_".  For
+example, a tag named "complete" is exposed as "tag_complete".
 
 An item is an object with the following properties:
 
