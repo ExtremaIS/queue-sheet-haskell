@@ -54,10 +54,10 @@ data QueueCtx
   = QueueCtx
     { name       :: !Name
     , url        :: !(Maybe Url)
+    , date       :: !(Maybe Date)
     , isSplit    :: !Bool
     , isPartial  :: !Bool
     , isComplete :: !Bool
-    , date       :: !(Maybe Date)
     , prevItem   :: !(Maybe Item)
     , nextItems  :: ![Item]
     }
@@ -66,10 +66,10 @@ instance Ginger.ToGVal m QueueCtx where
   toGVal QueueCtx{..} = Ginger.dict
     [ "name"       ~> name
     , "url"        ~> url
+    , "date"       ~> date
     , "isSplit"    ~> isSplit
     , "isPartial"  ~> isPartial
     , "isComplete" ~> isComplete
-    , "date"       ~> date
     , "prevItem"   ~> prevItem
     , "nextItems"  ~> nextItems
     ]
@@ -79,10 +79,10 @@ queueCtx :: Queue -> QueueCtx
 queueCtx Queue{..} = QueueCtx
     { name       = queueName
     , url        = queueUrl
+    , date       = queueDate
     , isSplit    = queueSplit
     , isPartial  = TagPartial `elem` queueTags
     , isComplete = TagComplete `elem` queueTags
-    , date       = queueDate
     , prevItem   = either Just (const Nothing) =<< queueItems
     , nextItems  = maybe [] (either (const []) id) queueItems
     }

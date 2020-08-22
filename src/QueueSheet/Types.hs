@@ -21,13 +21,13 @@ module QueueSheet.Types
     Name(..)
     -- * Url
   , Url(..)
+    -- * Date
+  , Date(..)
     -- * Section
   , Section(..)
   , defaultSection
     -- * Tag
   , Tag(..)
-    -- * Date
-  , Date(..)
     -- * Item
   , Item(..)
     -- * Queue
@@ -100,6 +100,22 @@ instance TTC.Render Url where
   render (Url t) = TTC.fromT t
 
 ------------------------------------------------------------------------------
+-- $Date
+
+-- | Date of last queue update
+newtype Date = Date Text
+  deriving newtype (Eq, Show)
+
+instance FromJSON Date where
+  parseJSON = fmap Date . parseToString
+
+instance Ginger.ToGVal m Date where
+  toGVal (Date t) = Ginger.toGVal $ escapeTeX t
+
+instance TTC.Render Date where
+  render (Date t) = TTC.fromT t
+
+------------------------------------------------------------------------------
 -- $Section
 
 -- | Section used to organize queues
@@ -133,22 +149,6 @@ instance FromJSON Tag where
     "partial"  -> return TagPartial
     "complete" -> return TagComplete
     tag        -> fail $ "unknown tag: " ++ T.unpack tag
-
-------------------------------------------------------------------------------
--- $Date
-
--- | Date of last queue update
-newtype Date = Date Text
-  deriving newtype (Eq, Show)
-
-instance FromJSON Date where
-  parseJSON = fmap Date . parseToString
-
-instance Ginger.ToGVal m Date where
-  toGVal (Date t) = Ginger.toGVal $ escapeTeX t
-
-instance TTC.Render Date where
-  render (Date t) = TTC.fromT t
 
 ------------------------------------------------------------------------------
 -- $Item
@@ -186,10 +186,10 @@ data Queue
   = Queue
     { queueName    :: !Name
     , queueUrl     :: !(Maybe Url)
+    , queueDate    :: !(Maybe Date)
     , queueSection :: !Section
     , queueSplit   :: !Bool
     , queueTags    :: ![Tag]
-    , queueDate    :: !(Maybe Date)
     , queueItems   :: !(Maybe (Either Item [Item]))
     }
   deriving (Eq, Show)
@@ -198,10 +198,10 @@ instance FromJSON Queue where
   parseJSON = A.withObject "Queue" $ \o -> do
     queueName    <- o .:  "name"
     queueUrl     <- o .:? "url"
+    queueDate    <- o .:? "date"
     queueSection <- o .:? "section" .!= defaultSection
     queueSplit   <- o .:? "split"   .!= False
     queueTags    <- o .:? "tags"    .!= []
-    queueDate    <- o .:? "date"
     mPrevItem    <- o .:? "prev"
     mNextItems   <- o .:? "next"
     let queueItems = case (mPrevItem, mNextItems) of
