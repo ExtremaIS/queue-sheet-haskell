@@ -42,8 +42,7 @@ import QueueSheet.Types
       ( Queue, queueDate, queueItems, queueName, queueSection, queueSplit
       , queueTags, queueUrl
       )
-  , QueueSheet(QueueSheet, qsQueues, qsSections), Section
-  , Tag(TagComplete, TagPartial), Url
+  , QueueSheet(QueueSheet, qsQueues, qsSections), Section, Tag(Tag), Url
   )
 
 ------------------------------------------------------------------------------
@@ -52,39 +51,35 @@ import QueueSheet.Types
 -- | Queue context
 data QueueCtx
   = QueueCtx
-    { name       :: !Name
-    , url        :: !(Maybe Url)
-    , date       :: !(Maybe Date)
-    , isSplit    :: !Bool
-    , isPartial  :: !Bool
-    , isComplete :: !Bool
-    , prevItem   :: !(Maybe Item)
-    , nextItems  :: ![Item]
+    { name      :: !Name
+    , url       :: !(Maybe Url)
+    , date      :: !(Maybe Date)
+    , tags      :: ![Tag]
+    , isSplit   :: !Bool
+    , prevItem  :: !(Maybe Item)
+    , nextItems :: ![Item]
     }
 
 instance Ginger.ToGVal m QueueCtx where
-  toGVal QueueCtx{..} = Ginger.dict
-    [ "name"       ~> name
-    , "url"        ~> url
-    , "date"       ~> date
-    , "isSplit"    ~> isSplit
-    , "isPartial"  ~> isPartial
-    , "isComplete" ~> isComplete
-    , "prevItem"   ~> prevItem
-    , "nextItems"  ~> nextItems
-    ]
+  toGVal QueueCtx{..} = Ginger.dict $
+    [ "name"      ~> name
+    , "url"       ~> url
+    , "date"      ~> date
+    , "isSplit"   ~> isSplit
+    , "prevItem"  ~> prevItem
+    , "nextItems" ~> nextItems
+    ] ++ [("tag_" <> tag) ~> True | Tag tag <- tags]
 
 -- | Construct a queue context
 queueCtx :: Queue -> QueueCtx
 queueCtx Queue{..} = QueueCtx
-    { name       = queueName
-    , url        = queueUrl
-    , date       = queueDate
-    , isSplit    = queueSplit
-    , isPartial  = TagPartial `elem` queueTags
-    , isComplete = TagComplete `elem` queueTags
-    , prevItem   = either Just (const Nothing) =<< queueItems
-    , nextItems  = maybe [] (either (const []) id) queueItems
+    { name      = queueName
+    , url       = queueUrl
+    , date      = queueDate
+    , tags      = queueTags
+    , isSplit   = queueSplit
+    , prevItem  = either Just (const Nothing) =<< queueItems
+    , nextItems = maybe [] (either (const []) id) queueItems
     }
 
 ------------------------------------------------------------------------------

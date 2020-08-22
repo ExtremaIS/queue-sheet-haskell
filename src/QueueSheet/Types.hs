@@ -49,6 +49,8 @@ import qualified Data.Aeson.Types as AT
 
 -- https://hackage.haskell.org/package/base
 import Control.Applicative ((<|>))
+import Control.Monad (unless)
+import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
 #if !MIN_VERSION_base (4,11,0)
 import Data.Monoid ((<>))
 #endif
@@ -139,16 +141,20 @@ defaultSection = Section ""
 -- $Tag
 
 -- | Queue tag
-data Tag
-  = TagPartial
-  | TagComplete
-  deriving (Eq, Show)
+newtype Tag = Tag Text
+  deriving newtype (Eq, Show)
 
 instance FromJSON Tag where
-  parseJSON = A.withText "Tag" $ \case
-    "partial"  -> return TagPartial
-    "complete" -> return TagComplete
-    tag        -> fail $ "unknown tag: " ++ T.unpack tag
+  parseJSON = A.withText "Tag" $ \t -> do
+      unless (T.all isValidChar t) $ fail ("invalid tag: " ++ T.unpack t)
+      return $ Tag t
+    where
+      isValidChar :: Char -> Bool
+      isValidChar c
+        | isAsciiLower c = True
+        | isAsciiUpper c = True
+        | isDigit      c = True
+        | otherwise      = c `elem` ("._-" :: String)
 
 ------------------------------------------------------------------------------
 -- $Item

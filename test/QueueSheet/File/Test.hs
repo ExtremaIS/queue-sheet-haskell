@@ -28,18 +28,13 @@ import Test.Tasty.HUnit ((@=?), testCase)
 -- (queue-sheet)
 import QueueSheet.File (loadYaml')
 import QueueSheet.Types
-  ( Date(Date)
-  , Item(Item, itemName, itemUrl)
-  , Name(Name)
+  ( Date(Date), Item(Item, itemName, itemUrl), Name(Name)
   , Queue
       ( Queue, queueDate, queueItems, queueName, queueSection, queueSplit
       , queueTags, queueUrl
       )
   , QueueSheet(QueueSheet, qsQueues, qsSections)
-  , Section(Section)
-  , Tag(TagComplete, TagPartial)
-  , Url(Url)
-  , defaultSection
+  , Section(Section), Tag(Tag), Url(Url), defaultSection
   )
 
 ------------------------------------------------------------------------------
@@ -331,12 +326,12 @@ testQueueSplit = testGroup "split"
 
 testQueueTag :: TestTree
 testQueueTag = testGroup "tag"
-    [ testCase "partial" $ do
+    [ testCase "valid" $ do
         let expected = defaultQueueSheet
               { qsQueues =
                   [ defaultQueue
                       { queueName = Name "test"
-                      , queueTags = [TagPartial]
+                      , queueTags = [Tag "partial"]
                       }
                   ]
               }
@@ -347,32 +342,16 @@ testQueueTag = testGroup "tag"
               , "    - partial"
               ]
           ]
-    , testCase "complete" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName = Name "test"
-                      , queueTags = [TagComplete]
-                      }
-                  ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  tags:"
-              , "    - complete"
-              ]
-          ]
-    , testCase "unknown" $ do
+    , testCase "invalid" $ do
         let message = intercalate "\n"
               [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].tags[0]: unknown tag: unknown"
+              , "Error in $[0].tags[0]: invalid tag: (invalid)"
               ]
         Left message @=? loadYaml
           [ validFile "/tmp/test.yaml"
               [ "- name: test"
               , "  tags:"
-              , "    - unknown"
+              , "    - (invalid)"
               ]
           ]
     , testCase "number" $ do
