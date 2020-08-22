@@ -297,6 +297,18 @@ testQueueTag = testGroup "tag"
               , "    - partial"
               ]
           ]
+    , testCase "empty" $ do
+        let message = intercalate "\n"
+              [ "error loading /tmp/test.yaml: Aeson exception:"
+              , "Error in $[0].tags[0]: empty tag"
+              ]
+        Left message @=? loadYaml
+          [ validFile "/tmp/test.yaml"
+              [ "- name: test"
+              , "  tags:"
+              , "    - \"\""
+              ]
+          ]
     , testCase "invalid" $ do
         let message = intercalate "\n"
               [ "error loading /tmp/test.yaml: Aeson exception:"

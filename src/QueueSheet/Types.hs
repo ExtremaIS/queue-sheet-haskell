@@ -49,7 +49,7 @@ import qualified Data.Aeson.Types as AT
 
 -- https://hackage.haskell.org/package/base
 import Control.Applicative ((<|>))
-import Control.Monad (unless)
+import Control.Monad (unless, when)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
 #if !MIN_VERSION_base (4,11,0)
 import Data.Monoid ((<>))
@@ -146,6 +146,7 @@ newtype Tag = Tag Text
 
 instance FromJSON Tag where
   parseJSON = A.withText "Tag" $ \t -> do
+      when (T.null t) $ fail "empty tag"
       unless (T.all isValidChar t) $ fail ("invalid tag: " ++ T.unpack t)
       return $ Tag t
     where
