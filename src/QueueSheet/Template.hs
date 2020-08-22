@@ -6,6 +6,7 @@
 -- License     : MIT
 ------------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -22,6 +23,9 @@ module QueueSheet.Template
 
 -- https://hackage.haskell.org/package/base
 import Data.Bifunctor (first)
+#if !MIN_VERSION_base (4,11,0)
+import Data.Monoid ((<>))
+#endif
 import qualified System.IO as IO
 
 -- https://hackage.haskell.org/package/ginger
