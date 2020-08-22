@@ -194,7 +194,6 @@ data Queue
     , queueUrl     :: !(Maybe Url)
     , queueDate    :: !(Maybe Date)
     , queueSection :: !Section
-    , queueSplit   :: !Bool
     , queueTags    :: ![Tag]
     , queueItems   :: !(Maybe (Either Item [Item]))
     }
@@ -206,7 +205,6 @@ instance FromJSON Queue where
     queueUrl     <- o .:? "url"
     queueDate    <- o .:? "date"
     queueSection <- o .:? "section" .!= defaultSection
-    queueSplit   <- o .:? "split"   .!= False
     queueTags    <- o .:? "tags"    .!= []
     mPrevItem    <- o .:? "prev"
     mNextItems   <- o .:? "next"

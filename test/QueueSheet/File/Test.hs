@@ -30,8 +30,8 @@ import QueueSheet.File (loadYaml')
 import QueueSheet.Types
   ( Date(Date), Item(Item, itemName, itemUrl), Name(Name)
   , Queue
-      ( Queue, queueDate, queueItems, queueName, queueSection, queueSplit
-      , queueTags, queueUrl
+      ( Queue, queueDate, queueItems, queueName, queueSection, queueTags
+      , queueUrl
       )
   , QueueSheet(QueueSheet, qsQueues, qsSections)
   , Section(Section), Tag(Tag), Url(Url), defaultSection
@@ -44,7 +44,6 @@ defaultQueue = Queue
     { queueName    = Name ""
     , queueUrl     = Nothing
     , queueSection = defaultSection
-    , queueSplit   = False
     , queueTags    = []
     , queueDate    = Nothing
     , queueItems   = Nothing
@@ -276,50 +275,6 @@ testQueueSection = testGroup "section"
           [ validFile "/tmp/test.yaml"
               [ "- name: test"
               , "  section: \"\""
-              ]
-          ]
-    ]
-
-testQueueSplit :: TestTree
-testQueueSplit = testGroup "split"
-    [ testCase "false" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName = Name "test"
-                      }
-                  ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  split: false"
-              ]
-          ]
-    , testCase "true" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueSplit = True
-                      }
-                  ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  split: true"
-              ]
-          ]
-    , testCase "string" $ do
-        let message = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].split: expected Bool, but encountered String"
-              ]
-        Left message @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  split: bad"
               ]
           ]
     ]
@@ -887,7 +842,6 @@ tests = testGroup "QueueSheet.File"
         [ testQueueName
         , testQueueUrl
         , testQueueSection
-        , testQueueSplit
         , testQueueTag
         , testQueueDate
         , testQueuePrev

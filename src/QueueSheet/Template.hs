@@ -39,8 +39,8 @@ import Control.Monad.Trans.Writer (Writer)
 import QueueSheet.Types
   ( Date, Item, Name
   , Queue
-      ( Queue, queueDate, queueItems, queueName, queueSection, queueSplit
-      , queueTags, queueUrl
+      ( Queue, queueDate, queueItems, queueName, queueSection, queueTags
+      , queueUrl
       )
   , QueueSheet(QueueSheet, qsQueues, qsSections), Section, Tag(Tag), Url
   )
@@ -55,7 +55,6 @@ data QueueCtx
     , url       :: !(Maybe Url)
     , date      :: !(Maybe Date)
     , tags      :: ![Tag]
-    , isSplit   :: !Bool
     , prevItem  :: !(Maybe Item)
     , nextItems :: ![Item]
     }
@@ -65,7 +64,6 @@ instance Ginger.ToGVal m QueueCtx where
     [ "name"      ~> name
     , "url"       ~> url
     , "date"      ~> date
-    , "isSplit"   ~> isSplit
     , "prevItem"  ~> prevItem
     , "nextItems" ~> nextItems
     ] ++ [("tag_" <> tag) ~> True | Tag tag <- tags]
@@ -77,7 +75,6 @@ queueCtx Queue{..} = QueueCtx
     , url       = queueUrl
     , date      = queueDate
     , tags      = queueTags
-    , isSplit   = queueSplit
     , prevItem  = either Just (const Nothing) =<< queueItems
     , nextItems = maybe [] (either (const []) id) queueItems
     }
