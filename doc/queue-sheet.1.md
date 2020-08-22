@@ -14,8 +14,8 @@ hyphenate: false
 
 # DESCRIPTION
 
-Queue Sheet is a utility that builds PDFs of lists.  The printed PDFs can be
-used to track progress through queues when offline.
+Queue Sheet is a utility that builds PDFs of lists.  Printed PDFs can be used
+to track progress through queues when offline.
 
 # OPTIONS
 

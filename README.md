@@ -16,8 +16,7 @@
 ## Overview
 
 Queue Sheet is a utility that builds PDFs of lists.  Printed PDFs can be used
-to track progress when offline.  Optionally include URLs when sharing a PDF
-with others so that they can easily access the media.
+to track progress when offline.
 
 Use Queue Sheet to track:
 
@@ -53,12 +52,13 @@ $ stack install
 
 See the [`queue-sheet` man page](doc/queue-sheet.1.md) for usage information.
 
-See the [example](example) directory for example files and output.
+See the [examples](examples) directory for example queue files, templates, and
+built output.
 
 ## Project
 
 Queue Sheet was written quickly to solve a particular pain point.  There are
-no plans to expose a library or put the package on Hackage.
+no plans to put the package on Hackage.
 
 ### Links
 
