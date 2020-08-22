@@ -11,6 +11,7 @@
 module QueueSheet.File.Test (tests) where
 
 -- https://hackage.haskell.org/package/base
+import Control.Monad (unless)
 import Data.Functor.Identity (Identity(runIdentity))
 import Data.List (intercalate)
 import Data.Maybe (fromMaybe, listToMaybe)
@@ -322,18 +323,23 @@ testQueueTag = testGroup "tag"
               ]
           ]
     , testCase "number" $ do
-        let message = intercalate "\n"
+        let messageOld = intercalate "\n"
+              [ "error loading /tmp/test.yaml: Aeson exception:"
+              , "Error in $[0].tags[0]: expected Tag, encountered Number"
+              ]
+            message = intercalate "\n"
               [ "error loading /tmp/test.yaml: Aeson exception:"
               , "Error in $[0].tags[0]: parsing Tag failed, " ++
                 "expected String, but encountered Number"
               ]
-        Left message @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  tags:"
-              , "    - 13"
+            eeq = loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags:"
+                  , "    - 13"
+                  ]
               ]
-          ]
+        unless (Left messageOld == eeq) $ Left message @=? eeq
     ]
 
 testQueueDate :: TestTree
