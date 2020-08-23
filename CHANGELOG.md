@@ -24,6 +24,17 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.3.0.0 (2020-08-23)
+
+### Breaking
+
+* Add default section support
+* Add top-level queues array support
+* Add import support
+* Add user-defined tag support
+* Remove split property
+* Change templates to use snake-case properties
+
 ## 0.2.0.0 (2020-08-11)
 
 ### Breaking

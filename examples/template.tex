@@ -63,7 +63,9 @@
 \begin{document}
 
 <! for section in sections !>
+<! if section.name !>
 \section*{<< section.name >>}
+<! endif !>
 
 <! for queue in section.queues !>
 \begin{minipage}{1.0\textwidth}
@@ -72,25 +74,25 @@
 <! else !>
 \textbf{<< queue.name >>}\hfill
 <! endif !>
-<< queue.date >><! if queue.isPartial !> \partialMark<! endif !><! if queue.isComplete !> \completeMark<! endif !>\\
+<< queue.date >><! if queue.tag_partial !> \partialMark<! endif !><! if queue.tag_complete !> \completeMark<! endif !>\\
 \vspace{-1em}
 \hrule
 \vspace{0.2em}
 \begin{fontspace}{1.5}{2}
-<! if queue.prevItem !>
-<! if queue.prevItem.url !>
-\href{<< queue.prevItem.url >>}{\previous{<< queue.previtem.name >>}}
+<! if queue.prev_item !>
+<! if queue.prev_item.url !>
+\href{<< queue.prev_item.url >>}{\previous{<< queue.previtem.name >>}}
 <! else !>
-\previous{<< queue.prevItem.name >>}
+\previous{<< queue.prev_item.name >>}
 <! endif !>
 <! else !>
-<! for item in queue.nextItems !>
+<! for item in queue.next_items !>
 <! if item.url !>
 \href{<< item.url >>}{<< item.name >>}
 <! else !>
 << item.name >>
 <! endif !>
-<! if queue.isSplit !>\\<! endif !>
+<! if queue.tag_split !>\\<! endif !>
 <! endfor !>
 <! endif !>
 \end{fontspace}

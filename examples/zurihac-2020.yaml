@@ -1,0 +1,34 @@
+---
+
+- name: "ZuriHac 2020"
+  url: https://www.youtube.com/channel/UC2zfPMH_srjxUN5EYrfIhCw/videos
+  date: 2020-06-20
+  tags:
+    - split
+  next:
+    - name: "A bare-bones Twitter clone implemented with Haskell + Nix"
+      url: https://www.youtube.com/watch?v=Q3qjTVcU9cg
+    - name: "Can Haskell Be the World's Database?"
+      url: https://www.youtube.com/watch?v=h8YTJkZ5TDA
+    - name: "Datatype-Generic Programming"
+      url: https://www.youtube.com/watch?v=pwnrfREbhWY
+    - name: "Digital Selves Live Set"
+      url: https://www.youtube.com/watch?v=CrSVuM3nXeA
+    - name: "Effects for Less"
+      url: https://www.youtube.com/watch?v=0jI-AlWEwYI
+    - name: "GHC QualifiedDo: customizable 'do' syntax without fuss"
+      url: https://www.youtube.com/watch?v=TH3cYp3349A
+    - name: "GHC On \"simple\" constraints for typechecker plugins"
+      url: https://www.youtube.com/watch?v=sE1qWyQWWVY
+    - name: "Haskell and InfoSec"
+      url: https://www.youtube.com/watch?v=RknM0j138PE
+    - name: "Opening Ceremony, Languages all the way down"
+      url: https://www.youtube.com/watch?v=kCpQ4aTzlis
+    - name: "(Programming Languages) in Agda = Programming (Languages in Agda)"
+      url: https://www.youtube.com/watch?v=x0R5h190Yts
+    - name: "Space Invaders Mob Programming Session"
+      url: https://www.youtube.com/watch?v=d0quV0YcE-E
+    - name: "A tour of linear types and linear base"
+      url: https://www.youtube.com/watch?v=I7-JuVNvz78
+    - name: "Write a GHC extension in 30 minutes"
+      url: https://www.youtube.com/watch?v=bhhE2DxbrJM

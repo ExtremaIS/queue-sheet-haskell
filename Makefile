@@ -70,6 +70,13 @@ clean-all: clean # clean package and remove artifacts
 > @rm -f *.yaml.lock
 .PHONY: clean-all
 
+coverage: # run tests with code coverage *
+> @command -v hr >/dev/null 2>&1 && hr -t || true
+> @stack test --coverage $(RESOLVER_ARGS) $(STACK_YAML_ARGS) $(NIX_PATH_ARGS)
+> @stack hpc report .
+.PHONY: coverage
+# https://github.com/commercialhaskell/stack/issues/1305
+
 grep: # grep all non-hidden files for expression E
 > $(eval E:= "")
 > @test -n "$(E)" || $(call die,"usage: make grep E=expression")
@@ -205,7 +212,9 @@ todo: # search for TODO items
 >   -not -path './build/*' \
 >   -not -path './project/*' \
 >   -not -path ./Makefile \
->   | xargs grep -Hn TODO || true
+>   | xargs grep -Hn TODO \
+>   | grep -v '^Binary file ' \
+>   || true
 .PHONY: todo
 
 version: # show current version
