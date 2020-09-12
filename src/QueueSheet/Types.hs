@@ -165,6 +165,7 @@ data Item
   = Item
     { itemName :: !Name
     , itemUrl  :: !(Maybe Url)
+    , itemTags :: ![Tag]
     }
   deriving (Eq, Show)
 
@@ -173,17 +174,19 @@ instance FromJSON Item where
     (A.Object o) -> do
       itemName <- o .:  "name"
       itemUrl  <- o .:? "url"
+      itemTags <- o .:? "tags" .!= []
       return Item{..}
     value -> do
       itemName <- Name <$> parseToString value
-      let itemUrl = Nothing
+      let itemUrl  = Nothing
+          itemTags = []
       return Item{..}
 
 instance Ginger.ToGVal m Item where
-  toGVal Item{..} = Ginger.dict
+  toGVal Item{..} = Ginger.dict $
     [ "name" ~> itemName
     , "url"  ~> itemUrl
-    ]
+    ] ++ [("tag_" <> tag) ~> True | Tag tag <- itemTags]
 
 ------------------------------------------------------------------------------
 -- $Queue

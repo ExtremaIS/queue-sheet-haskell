@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Breaking
+
+* Add item support for tags
+
 ## 0.3.0.0 (2020-08-23)
 
 ### Breaking
