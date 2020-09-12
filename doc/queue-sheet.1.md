@@ -82,13 +82,16 @@ exhausted, the previous item can be specified using the *prev* property.  If
 both *prev* and *next* are specified, *prev* is ignored.
 
 Items can be specified by name only, using a string or a number.  To associate
-a URL with an item, use an object with the following properties:
+a URL or tags with an item, use an object with the following properties:
 
 *name*
 :   name of the item (string, required)
 
 *url*
 :   item URL (string, optional)
+
+*tags*
+:   list of tags (list of string, optional)
 
 To organize queues into sections, the YAML file should be written as an object
 with two properties:
@@ -188,6 +191,9 @@ An item is an object with the following properties:
 
 *url*
 :   item URL or empty string if no URL (string)
+
+Item tags are exposed as boolean properties prefixed with "tag_".  For
+example, a tag named "em" is exposed as "tag_em".
 
 ## `QUEUES.pdf`
 
