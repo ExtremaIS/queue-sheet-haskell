@@ -29,7 +29,7 @@ import Test.Tasty.HUnit ((@=?), testCase)
 -- (queue-sheet)
 import QueueSheet.File (loadYaml')
 import QueueSheet.Types
-  ( Date(Date), Item(Item, itemName, itemUrl), Name(Name)
+  ( Date(Date), Item(Item, itemName, itemTags, itemUrl), Name(Name)
   , Queue
       ( Queue, queueDate, queueItems, queueName, queueSection, queueTags
       , queueUrl
@@ -39,6 +39,13 @@ import QueueSheet.Types
   )
 
 ------------------------------------------------------------------------------
+
+defaultItem :: Item
+defaultItem = Item
+    { itemName = Name ""
+    , itemUrl  = Nothing
+    , itemTags = []
+    }
 
 defaultQueue :: Queue
 defaultQueue = Queue
@@ -379,9 +386,8 @@ testQueuePrev = testGroup "prev"
               { qsQueues =
                   [ defaultQueue
                       { queueName  = Name "test"
-                      , queueItems = Just . Left $ Item
+                      , queueItems = Just . Left $ defaultItem
                           { itemName = Name "premiere"
-                          , itemUrl  = Nothing
                           }
                       }
                   ]
@@ -397,9 +403,8 @@ testQueuePrev = testGroup "prev"
               { qsQueues =
                   [ defaultQueue
                       { queueName  = Name "test"
-                      , queueItems = Just . Left $ Item
+                      , queueItems = Just . Left $ defaultItem
                           { itemName = Name "42"
-                          , itemUrl  = Nothing
                           }
                       }
                   ]
@@ -415,9 +420,8 @@ testQueuePrev = testGroup "prev"
               { qsQueues =
                   [ defaultQueue
                       { queueName  = Name "test"
-                      , queueItems = Just . Left $ Item
+                      , queueItems = Just . Left $ defaultItem
                           { itemName = Name "premiere"
-                          , itemUrl  = Nothing
                           }
                       }
                   ]
@@ -434,7 +438,7 @@ testQueuePrev = testGroup "prev"
               { qsQueues =
                   [ defaultQueue
                       { queueName  = Name "test"
-                      , queueItems = Just . Left $ Item
+                      , queueItems = Just . Left $ defaultItem
                           { itemName = Name "42"
                           , itemUrl  = Just $ Url "https://www.example.com/42"
                           }
@@ -447,6 +451,28 @@ testQueuePrev = testGroup "prev"
               , "  prev:"
               , "    name: 42"
               , "    url: https://www.example.com/42"
+              ]
+          ]
+    , testCase "tags" $ do
+        let expected = defaultQueueSheet
+              { qsQueues =
+                  [ defaultQueue
+                      { queueName  = Name "test"
+                      , queueItems = Just . Left $ defaultItem
+                          { itemName = Name "42"
+                          , itemTags = [Tag "one", Tag "two"]
+                          }
+                      }
+                  ]
+              }
+        Right expected @=? loadYaml
+          [ validFile "/tmp/test.yaml"
+              [ "- name: test"
+              , "  prev:"
+              , "    name: 42"
+              , "    tags:"
+              , "      - one"
+              , "      - two"
               ]
           ]
     , testCase "empty" $ do
@@ -471,9 +497,8 @@ testQueueNext = testGroup "next"
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "one"
-                              , itemUrl  = Nothing
                               }
                           ]
                       }
@@ -492,9 +517,8 @@ testQueueNext = testGroup "next"
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "42"
-                              , itemUrl  = Nothing
                               }
                           ]
                       }
@@ -513,9 +537,8 @@ testQueueNext = testGroup "next"
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "one"
-                              , itemUrl  = Nothing
                               }
                           ]
                       }
@@ -534,7 +557,7 @@ testQueueNext = testGroup "next"
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "one"
                               , itemUrl  = Just $
                                   Url "https://www.example.com/one"
@@ -551,17 +574,40 @@ testQueueNext = testGroup "next"
               , "      url: https://www.example.com/one"
               ]
           ]
+    , testCase "tags" $ do
+        let expected = defaultQueueSheet
+              { qsQueues =
+                  [ defaultQueue
+                      { queueName  = Name "test"
+                      , queueItems = Just $ Right
+                          [ defaultItem
+                              { itemName = Name "one"
+                              , itemTags = [Tag "one", Tag "two"]
+                              }
+                          ]
+                      }
+                  ]
+              }
+        Right expected @=? loadYaml
+          [ validFile "/tmp/test.yaml"
+              [ "- name: test"
+              , "  next:"
+              , "    - name: one"
+              , "      tags:"
+              , "        - one"
+              , "        - two"
+              ]
+          ]
     , testCase "multiple" $ do
         let expected = defaultQueueSheet
               { qsQueues =
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "one"
-                              , itemUrl  = Nothing
                               }
-                          , Item
+                          , defaultItem
                               { itemName = Name "42"
                               , itemUrl  = Just $
                                   Url "https://www.example.com/42"
@@ -600,9 +646,8 @@ testQueueNext = testGroup "next"
                   [ defaultQueue
                       { queueName  = Name "test"
                       , queueItems = Just $ Right
-                          [ Item
+                          [ defaultItem
                               { itemName = Name "42"
-                              , itemUrl  = Nothing
                               }
                           ]
                       }
