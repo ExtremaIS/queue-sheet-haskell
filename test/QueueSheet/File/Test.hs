@@ -289,64 +289,154 @@ testQueueSection = testGroup "section"
 
 testQueueTag :: TestTree
 testQueueTag = testGroup "tag"
-    [ testCase "valid" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName = Name "test"
-                      , queueTags = [Tag "partial"]
-                      }
-                  ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  tags:"
-              , "    - partial"
-              ]
-          ]
-    , testCase "empty" $ do
-        let message = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].tags[0]: empty tag"
-              ]
-        Left message @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  tags:"
-              , "    - \"\""
-              ]
-          ]
-    , testCase "invalid" $ do
-        let message = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].tags[0]: invalid tag: (invalid)"
-              ]
-        Left message @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  tags:"
-              , "    - (invalid)"
-              ]
-          ]
-    , testCase "number" $ do
-        let messageOld = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].tags[0]: expected Tag, encountered Number"
-              ]
-            message = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].tags[0]: parsing Tag failed, " ++
-                "expected String, but encountered Number"
-              ]
-            eeq = loadYaml
+    [ testGroup "array"
+        [ testCase "valid" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName = Name "test"
+                          , queueTags = [Tag "partial"]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
               [ validFile "/tmp/test.yaml"
                   [ "- name: test"
                   , "  tags:"
-                  , "    - 13"
+                  , "    - partial"
                   ]
               ]
-        unless (Left messageOld == eeq) $ Left message @=? eeq
+        , testCase "multiple" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName = Name "test"
+                          , queueTags = [Tag "complete", Tag "partial"]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags:"
+                  , "    - complete"
+                  , "    - partial"
+                  ]
+              ]
+        , testCase "empty" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: empty tag"
+                  ]
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags:"
+                  , "    - \"\""
+                  ]
+              ]
+        , testCase "invalid" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: invalid tag: (invalid)"
+                  ]
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags:"
+                  , "    - (invalid)"
+                  ]
+              ]
+        , testCase "number" $ do
+            let messageOld = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: expected Tag, encountered Number"
+                  ]
+                message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: parsing Tag failed, " ++
+                    "expected String, but encountered Number"
+                  ]
+                eeq = loadYaml
+                  [ validFile "/tmp/test.yaml"
+                      [ "- name: test"
+                      , "  tags:"
+                      , "    - 13"
+                      ]
+                  ]
+            unless (Left messageOld == eeq) $ Left message @=? eeq
+        ]
+    , testGroup "csv"
+        [ testCase "single" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName = Name "test"
+                          , queueTags = [Tag "partial"]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags: partial"
+                  ]
+              ]
+        , testCase "multiple" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName = Name "test"
+                          , queueTags = [Tag "complete", Tag "partial"]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags: complete, partial"
+                  ]
+              ]
+        , testCase "empty" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: empty tag"
+                  ]
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags: \"\""
+                  ]
+              ]
+        , testCase "invalid" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: invalid tag: (invalid)"
+                  ]
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags: (invalid)"
+                  ]
+              ]
+        , testCase "number" $ do
+            let messageOld = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: expected Tag, encountered Number"
+                  ]
+                message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: parsing Tag failed, " ++
+                    "expected String, but encountered Number"
+                  ]
+                eeq = loadYaml
+                  [ validFile "/tmp/test.yaml"
+                      [ "- name: test"
+                      , "  tags: 13"
+                      ]
+                  ]
+            unless (Left messageOld == eeq) $ Left message @=? eeq
+        ]
     ]
 
 testQueueDate :: TestTree
@@ -453,28 +543,50 @@ testQueuePrev = testGroup "prev"
               , "    url: https://www.example.com/42"
               ]
           ]
-    , testCase "tags" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just . Left $ defaultItem
-                          { itemName = Name "42"
-                          , itemTags = [Tag "one", Tag "two"]
+    , testGroup "tags"
+        [ testCase "array" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just . Left $ defaultItem
+                              { itemName = Name "42"
+                              , itemTags = [Tag "one", Tag "two"]
+                              }
                           }
-                      }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  prev:"
+                  , "    name: 42"
+                  , "    tags:"
+                  , "      - one"
+                  , "      - two"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  prev:"
-              , "    name: 42"
-              , "    tags:"
-              , "      - one"
-              , "      - two"
               ]
-          ]
+        , testCase "csv" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just . Left $ defaultItem
+                              { itemName = Name "42"
+                              , itemTags = [Tag "one", Tag "two"]
+                              }
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  prev:"
+                  , "    name: 42"
+                  , "    tags: one, two"
+                  ]
+              ]
+        ]
     , testCase "empty" $ do
         let message = intercalate "\n"
               [ "error loading /tmp/test.yaml: Aeson exception:"
@@ -491,188 +603,287 @@ testQueuePrev = testGroup "prev"
 
 testQueueNext :: TestTree
 testQueueNext = testGroup "next"
-    [ testCase "string" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "one"
+    [ testGroup "array"
+        [ testCase "string" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "one"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - one"
+                  ]
+              ]
+        , testCase "number" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - 42"
+                  ]
+              ]
+        , testCase "object" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "one"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - name: one"
+                  ]
+              ]
+        , testCase "url" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "one"
+                                  , itemUrl  = Just $
+                                      Url "https://www.example.com/one"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - name: one"
+                  , "      url: https://www.example.com/one"
+                  ]
+              ]
+        , testGroup "tags"
+            [ testCase "array" $ do
+                let expected = defaultQueueSheet
+                      { qsQueues =
+                          [ defaultQueue
+                              { queueName  = Name "test"
+                              , queueItems = Just $ Right
+                                  [ defaultItem
+                                      { itemName = Name "one"
+                                      , itemTags = [Tag "one", Tag "two"]
+                                      }
+                                  ]
                               }
                           ]
                       }
+                Right expected @=? loadYaml
+                  [ validFile "/tmp/test.yaml"
+                      [ "- name: test"
+                      , "  next:"
+                      , "    - name: one"
+                      , "      tags:"
+                      , "        - one"
+                      , "        - two"
+                      ]
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - one"
-              ]
-          ]
-    , testCase "number" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "42"
+            , testCase "csv" $ do
+                let expected = defaultQueueSheet
+                      { qsQueues =
+                          [ defaultQueue
+                              { queueName  = Name "test"
+                              , queueItems = Just $ Right
+                                  [ defaultItem
+                                      { itemName = Name "one"
+                                      , itemTags = [Tag "one", Tag "two"]
+                                      }
+                                  ]
                               }
                           ]
                       }
+                Right expected @=? loadYaml
+                  [ validFile "/tmp/test.yaml"
+                      [ "- name: test"
+                      , "  next:"
+                      , "    - name: one"
+                      , "      tags: one, two"
+                      ]
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - 42"
-              ]
-          ]
-    , testCase "object" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "one"
-                              }
-                          ]
-                      }
+            ]
+        , testCase "multiple" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "one"
+                                  }
+                              , defaultItem
+                                  { itemName = Name "42"
+                                  , itemUrl  = Just $
+                                      Url "https://www.example.com/42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - one"
+                  , "    - name: 42"
+                  , "      url: https://www.example.com/42"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - name: one"
               ]
-          ]
-    , testCase "url" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "one"
-                              , itemUrl  = Just $
-                                  Url "https://www.example.com/one"
-                              }
-                          ]
-                      }
+        , testCase "none" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Nothing
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - name: one"
-              , "      url: https://www.example.com/one"
               ]
-          ]
-    , testCase "tags" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "one"
-                              , itemTags = [Tag "one", Tag "two"]
-                              }
-                          ]
-                      }
+        , testCase "prev" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  prev: 41"
+                  , "  next:"
+                  , "    - 42"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - name: one"
-              , "      tags:"
-              , "        - one"
-              , "        - two"
               ]
-          ]
-    , testCase "multiple" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "one"
-                              }
-                          , defaultItem
-                              { itemName = Name "42"
-                              , itemUrl  = Just $
-                                  Url "https://www.example.com/42"
-                              }
-                          ]
-                      }
+        , testCase "empty" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: empty string"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - one"
-              , "    - name: 42"
-              , "      url: https://www.example.com/42"
-              ]
-          ]
-    , testCase "none" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Nothing
-                      }
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next:"
+                  , "    - \"\""
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
               ]
-          ]
-    , testCase "prev" $ do
-        let expected = defaultQueueSheet
-              { qsQueues =
-                  [ defaultQueue
-                      { queueName  = Name "test"
-                      , queueItems = Just $ Right
-                          [ defaultItem
-                              { itemName = Name "42"
-                              }
-                          ]
-                      }
+        ]
+    , testGroup "csv"
+        [ testCase "single" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "one"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next: one"
                   ]
-              }
-        Right expected @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  prev: 41"
-              , "  next:"
-              , "    - 42"
               ]
-          ]
-    , testCase "empty" $ do
-        let message = intercalate "\n"
-              [ "error loading /tmp/test.yaml: Aeson exception:"
-              , "Error in $[0].next[0]: empty string"
+        , testCase "number" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next: 42"
+                  ]
               ]
-        Left message @=? loadYaml
-          [ validFile "/tmp/test.yaml"
-              [ "- name: test"
-              , "  next:"
-              , "    - \"\""
+        , testCase "multiple" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "11"
+                                  }
+                              , defaultItem
+                                  { itemName = Name "42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next: 11, 42"
+                  ]
               ]
-          ]
+        , testCase "empty" $ do
+            let message = intercalate "\n"
+                  [ "error loading /tmp/test.yaml: Aeson exception:"
+                  , "Error in $[0]: empty string"
+                  ]
+            Left message @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next: \"\""
+                  ]
+              ]
+        ]
     ]
 
 ------------------------------------------------------------------------------

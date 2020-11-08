@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Breaking
+
+* Add simplified CSV support for tags and items
+
 ## 0.4.0.0 (2020-09-12)
 
 ### Breaking
