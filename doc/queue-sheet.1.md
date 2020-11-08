@@ -50,7 +50,7 @@ Queues are specified in YAML format.  They may be specified in a few different
 ways, depending on how you want to organize them.
 
 To create a queue sheet of queues without sections, the YAML file consists of
-a list of queue objects, which have the following properties:
+an array of queue objects, which have the following properties:
 
 *name*
 :   queue name (string, required)
@@ -62,27 +62,34 @@ a list of queue objects, which have the following properties:
 :   date of last update (string, optional)
 
 *tags*
-:   list of tags (list of string, optional)
+:   list of tags (simplified CSV string or array of strings, optional)
 
 *prev*
 :   previous item (item, optional)
 
 *next*
-:   list of next items (list of items, optional)
+:   list of next items (simplified CSV string or array of items, optional)
 
 The only required property is *name*.
 
-The *tags* property is a list of string tags that are associated with the
-queue.  A tag must consist of at least one ASCII letter, number, period,
-underscore, or dash.  For example, tag "complete" can be used to indicate that
-there will be no new episodes of a podcast that is complete.
+The *tags* property associates one or more string tags with the queue.  Tags
+can be specified using a string in simplified CSV format or an array of
+strings.  A simplified CSV string is split on commas, and leading/trailing
+whitespace is stripped from each item.  A tag must consist of at least one
+ASCII letter, number, period, underscore, or dash.  For example, tag
+"complete" can be used to indicate that there will be no new episodes of a
+podcast that is complete.
 
 The *next* property is a list of next items in the queue.  When the list is
 exhausted, the previous item can be specified using the *prev* property.  If
 both *prev* and *next* are specified, *prev* is ignored.
 
-Items can be specified by name only, using a string or a number.  To associate
-a URL or tags with an item, use an object with the following properties:
+Next items can be specified using a string in simplified CSV format or an
+array or items.  A simplified CSV string is split on commas, and
+leading/trailing whitespace is stripped from each item.  When specifying items
+using an array, the item name can be specified using a string or a number, or
+an object with the following properties can be used in order to specify more
+item information:
 
 *name*
 :   name of the item (string, required)
@@ -91,19 +98,19 @@ a URL or tags with an item, use an object with the following properties:
 :   item URL (string, optional)
 
 *tags*
-:   list of tags (list of string, optional)
+:   list of tags (simplified CSV string or array of strings, optional)
 
 To organize queues into sections, the YAML file should be written as an object
 with two properties:
 
 *sections*
-:   list of sections names (optional)
+:   list of sections names (array of strings, optional)
 
 *queues*
-:   list of queue objects (required)
+:   list of queue objects (array of queue objects, required)
 
 Sections names are specified using strings.  The order that the sections are
-listed determines the order that they are displayed on the queue sheet.
+specified determines the order that they are displayed on the queue sheet.
 
 Queue objects are as above, with an additional property to specify the
 section:
@@ -115,8 +122,8 @@ Queues that are not explicitly associated with a section are associated with
 an implicit default section.
 
 To make it easier to share queue files, imports are also supported.  Import
-another queue file using an import object instead of a queue object in a list
-of queues.  An import object has the following properties:
+another queue file using an import object instead of a queue object in an
+array of queues.  An import object has the following properties:
 
 *import*
 :   path to the queue file to import (string, required)
