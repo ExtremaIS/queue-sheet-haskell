@@ -30,6 +30,10 @@ following conventions:
 
 * Add simplified CSV support for tags and items
 
+### Non-Breaking
+
+* Rename Git default branch to `main`
+
 ## 0.4.0.0 (2020-09-12)
 
 ### Breaking

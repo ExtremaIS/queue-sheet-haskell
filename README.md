@@ -1,6 +1,6 @@
 # Queue Sheet
 
-[![Build Status](https://travis-ci.com/ExtremaIS/queue-sheet-haskell.svg?branch=master)](https://travis-ci.com/ExtremaIS/queue-sheet-haskell)
+[![Build Status](https://travis-ci.com/ExtremaIS/queue-sheet-haskell.svg?branch=main)](https://travis-ci.com/ExtremaIS/queue-sheet-haskell)
 
 * [Overview](#overview)
 * [Requirements](#requirements)
@@ -66,7 +66,7 @@ no plans to put the package on Hackage.
 
 ### Releases
 
-All releases are tagged in the `master` branch.  Release tags are signed using
+All releases are tagged in the `main` branch.  Release tags are signed using
 the
 [`security@extrema.is` GPG key](http://keys.gnupg.net/pks/lookup?op=vindex&fingerprint=on&search=0x1D484E4B4705FADF).
 
