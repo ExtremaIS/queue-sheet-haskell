@@ -24,6 +24,16 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.5.0.0 (2020-11-08)
+
+### Breaking
+
+* Add simplified CSV support for tags and items
+
+### Non-Breaking
+
+* Rename Git default branch to `main`
+
 ## 0.4.0.0 (2020-09-12)
 
 ### Breaking

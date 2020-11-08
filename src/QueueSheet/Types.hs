@@ -69,6 +69,9 @@ import Data.Text (Text)
 -- https://hackage.haskell.org/package/ttc
 import qualified Data.TTC as TTC
 
+-- https://hackage.haskell.org/package/vector
+import qualified Data.Vector as V
+
 ------------------------------------------------------------------------------
 -- $Name
 
@@ -174,7 +177,7 @@ instance FromJSON Item where
     (A.Object o) -> do
       itemName <- o .:  "name"
       itemUrl  <- o .:? "url"
-      itemTags <- o .:? "tags" .!= []
+      itemTags <- maybe (pure []) parseCSV =<< (o .:? "tags")
       return Item{..}
     value -> do
       itemName <- Name <$> parseToString value
@@ -209,13 +212,13 @@ instance FromJSON Queue where
     queueUrl     <- o .:? "url"
     queueDate    <- o .:? "date"
     queueSection <- o .:? "section" .!= defaultSection
-    queueTags    <- o .:? "tags"    .!= []
+    queueTags    <- maybe (pure []) parseCSV =<< (o .:? "tags")
     mPrevItem    <- o .:? "prev"
-    mNextItems   <- o .:? "next"
-    let queueItems = case (mPrevItem, mNextItems) of
-          (_,         Just items) -> Just $ Right items
-          (Just item, Nothing)    -> Just $ Left item
-          (Nothing,   Nothing)    -> Nothing
+    mNextValue   <- o .:? "next"
+    queueItems   <- case (mPrevItem, mNextValue) of
+      (_,         Just nextValue) -> Just . Right <$> parseCSV nextValue
+      (Just item, Nothing)        -> pure . Just $ Left item
+      (Nothing,   Nothing)        -> pure Nothing
     return Queue{..}
 
 ------------------------------------------------------------------------------
@@ -305,6 +308,17 @@ escapeTeX = T.foldl go ""
       '}'  -> acc <> "\\}"
       '~'  -> acc <> "\\textasciitilde{}"
       c    -> acc `T.snoc` c
+
+-- | Parse an array or string in simplified CSV format
+--
+-- Strings are split on commas, and leading/trailing whitespace is removed
+-- from each item.
+parseCSV :: A.FromJSON a => A.Value -> AT.Parser [a]
+parseCSV = \case
+    (A.String t) -> mapM (parseJSON . A.String . T.strip) $ T.splitOn "," t
+    (A.Array v)  -> mapM parseJSON $ V.toList v
+    A.Object{}   -> fail "unexpected object"
+    value        -> (: []) <$> parseJSON value
 
 -- | Parse any scalar value as a string
 --

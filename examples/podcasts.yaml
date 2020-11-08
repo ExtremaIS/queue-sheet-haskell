@@ -52,10 +52,7 @@ queues:
     url: https://www.preposterousuniverse.com/podcast/
     date: 2020-08-17
     section: Other
-    next:
-      - 108
-      - 109
-      - 110
+    next: 108,109,110
 
   - name: Quanta
     url: https://www.quantamagazine.org/tag/podcast/
