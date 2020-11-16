@@ -1,7 +1,5 @@
 # Queue Sheet
 
-[![Build Status](https://travis-ci.com/ExtremaIS/queue-sheet-haskell.svg?branch=main)](https://travis-ci.com/ExtremaIS/queue-sheet-haskell)
-
 * [Overview](#overview)
 * [Requirements](#requirements)
 * [Installation](#installation)

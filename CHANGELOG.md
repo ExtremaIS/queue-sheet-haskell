@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Non-Breaking
+
+* Remove Travis CI
+
 ## 0.5.0.0 (2020-11-08)
 
 ### Breaking
