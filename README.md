@@ -1,5 +1,7 @@
 # Queue Sheet
 
+[![GitHub CI](https://github.com/ExtremaIS/queue-sheet-haskell/workflows/CI/badge.svg?branch=main)](https://github.com/ExtremaIS/queue-sheet-haskell/actions)
+
 * [Overview](#overview)
 * [Requirements](#requirements)
 * [Installation](#installation)
