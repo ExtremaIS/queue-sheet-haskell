@@ -24,6 +24,12 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.5.0.1 (2020-11-23)
+
+### Non-Breaking
+
+* Use GitHub Actions instead of Travis CI
+
 ## 0.5.0.0 (2020-11-08)
 
 ### Breaking
