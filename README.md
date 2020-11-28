@@ -28,7 +28,7 @@ Use Queue Sheet to track:
 ## Requirements
 
 Queue Sheet has only been tested on Linux.  It *might* work on Windows and
-OS X.
+macOS.
 
 Queue Sheet uses [XeTeX](https://tug.org/xetex/) to build PDFs.  It is usually
 installed as part of [TeX Live](https://www.tug.org/texlive/).  The LaTeX
