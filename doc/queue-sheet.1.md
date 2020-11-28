@@ -216,7 +216,7 @@ base name as the queues file but with a `.pdf` extension.
 :   execution error
 
 2
-:   command line error
+:   command-line error
 
 # PROJECT
 
