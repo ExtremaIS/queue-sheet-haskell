@@ -67,7 +67,7 @@ executable queue-sheet
   build-depends:
       ansi-wl-pprint >=0.6 && <0.7
     , base >=4.7 && <5
-    , optparse-applicative >=0.14 && <0.16
+    , optparse-applicative >=0.14 && <0.17
     , queue-sheet
   default-language: Haskell2010
   ghc-options: -Wall

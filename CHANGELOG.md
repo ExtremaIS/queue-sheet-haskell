@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Non-Breaking
+
+* Add support for `optparse-applicative` `0.16`
+
 ## 0.5.0.1 (2020-11-23)
 
 ### Non-Breaking
