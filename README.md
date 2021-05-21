@@ -1,5 +1,6 @@
 # Queue Sheet
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![GitHub CI](https://github.com/ExtremaIS/queue-sheet-haskell/workflows/CI/badge.svg?branch=main)](https://github.com/ExtremaIS/queue-sheet-haskell/actions)
 
 * [Overview](#overview)
