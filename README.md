@@ -1,11 +1,14 @@
 # Queue Sheet
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![GitHub CI](https://github.com/ExtremaIS/queue-sheet-haskell/workflows/CI/badge.svg?branch=main)](https://github.com/ExtremaIS/queue-sheet-haskell/actions)
 
 * [Overview](#overview)
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Installation From Source](#installation-from-source)
+    * [`.deb` Package Installation](#deb-package-installation)
+    * [`.rpm` Package Installation](#rpm-package-installation)
 * [Usage](#usage)
 * [Project](#project)
     * [Links](#links)
@@ -28,7 +31,7 @@ Use Queue Sheet to track:
 ## Requirements
 
 Queue Sheet has only been tested on Linux.  It *might* work on Windows and
-OS X.
+macOS.
 
 Queue Sheet uses [XeTeX](https://tug.org/xetex/) to build PDFs.  It is usually
 installed as part of [TeX Live](https://www.tug.org/texlive/).  The LaTeX
@@ -38,15 +41,27 @@ packages used depend entirely on the contents of the template.
 
 ### Installation From Source
 
-Queue Sheet can be built from source using
-[Stack](https://www.haskellstack.org).  For example, you can install the
-latest release (to `~/.local/bin` on Linux) as follows:
+Queue Sheet can be built from source using [Stack][].  For example, you can
+install the latest release (to `/usr/bin` on Linux) as follows:
 
 ```
 $ git clone https://github.com/ExtremaIS/queue-sheet-haskell.git
 $ cd queue-sheet-haskell
-$ stack install
+$ make
+$ sudo make install
 ```
+
+[Stack]: <https://www.haskellstack.org>
+
+#### `.deb` Package Installation
+
+Check the [Releases][] page for `.deb` packages.
+
+#### `.rpm` Package Installation
+
+Check the [Releases][] page for `.rpm` packages.
+
+[Releases]: <https://github.com/ExtremaIS/queue-sheet-haskell/releases>
 
 ## Usage
 

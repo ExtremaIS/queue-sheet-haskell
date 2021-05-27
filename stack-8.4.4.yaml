@@ -1,8 +1,8 @@
 resolver: lts-12.26
 
 packages:
-- .
+  - .
 
 extra-deps:
-- ginger-0.8.4.0
-- ttc-0.2.2.0
+  - ginger-0.8.4.0
+  - ttc-0.4.0.0

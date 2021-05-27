@@ -1,8 +1,7 @@
-resolver: lts-11.22
+resolver: lts-17.13
 
 packages:
   - .
 
 extra-deps:
-  - ginger-0.8.4.0
   - ttc-0.4.0.0

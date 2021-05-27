@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.File.Test
 -- Description : queues file tests
--- Copyright   : Copyright (c) 2020 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2021 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
