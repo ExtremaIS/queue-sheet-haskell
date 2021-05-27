@@ -1,0 +1,14 @@
+Source: queue-sheet-haskell
+Section: utils
+Priority: optional
+Maintainer: Travis Cardwell <travis.cardwell@extrema.is>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Vcs-Git: git://github.com/ExtremaIS/queue-sheet-haskell.git
+Vcs-browser: https://github.com/ExtremaIS/queue-sheet-haskell
+Homepage: https://github.com/ExtremaIS/queue-sheet-haskell#queue-sheet
+
+Package: queue-sheet-haskell
+Architecture: {{ARCH}}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Queue sheet utility

@@ -7,6 +7,8 @@
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Installation From Source](#installation-from-source)
+    * [`.deb` Package Installation](#deb-package-installation)
+    * [`.rpm` Package Installation](#rpm-package-installation)
 * [Usage](#usage)
 * [Project](#project)
     * [Links](#links)
@@ -39,15 +41,27 @@ packages used depend entirely on the contents of the template.
 
 ### Installation From Source
 
-Queue Sheet can be built from source using
-[Stack](https://www.haskellstack.org).  For example, you can install the
-latest release (to `~/.local/bin` on Linux) as follows:
+Queue Sheet can be built from source using [Stack][].  For example, you can
+install the latest release (to `/usr/bin` on Linux) as follows:
 
 ```
 $ git clone https://github.com/ExtremaIS/queue-sheet-haskell.git
 $ cd queue-sheet-haskell
-$ stack install
+$ make
+$ sudo make install
 ```
+
+[Stack]: <https://www.haskellstack.org>
+
+#### `.deb` Package Installation
+
+Check the [Releases][] page for `.deb` packages.
+
+#### `.rpm` Package Installation
+
+Check the [Releases][] page for `.rpm` packages.
+
+[Releases]: <https://github.com/ExtremaIS/queue-sheet-haskell/releases>
 
 ## Usage
 
