@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Non-Breaking
+
+* Refactor Nix configuration
+
 ## 0.6.0.0 (2021-05-27)
 
 ### Breaking
