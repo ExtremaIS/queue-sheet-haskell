@@ -311,8 +311,8 @@ test-all: # run tests for all configured Stackage releases
 > @make test CONFIG=stack-8.6.5.yaml
 > @command -v hr >/dev/null 2>&1 && hr "stack-8.8.4.yaml" || true
 > @make test CONFIG=stack-8.8.4.yaml
-> @command -v hr >/dev/null 2>&1 && hr "stack-8.10.4.yaml" || true
-> @make test CONFIG=stack-8.10.4.yaml
+> @command -v hr >/dev/null 2>&1 && hr "stack-8.10.6.yaml" || true
+> @make test CONFIG=stack-8.10.6.yaml
 .PHONY: test-all
 
 test-nightly: # run tests for the latest Stackage nightly release
