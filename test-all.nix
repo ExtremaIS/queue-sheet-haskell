@@ -9,6 +9,5 @@
   queue-sheet-ghc-844 = import ./default.nix { compiler = "ghc844"; };
   # queue-sheet-ghc-865 = import ./default.nix { compiler = "ghc865"; }; NOTE ginger broken
   queue-sheet-ghc-884 = import ./default.nix { compiler = "ghc884"; };
-  queue-sheet-ghc-8104 = import ./default.nix { compiler = "ghc8104"; };
-  queue-sheet-ghc-901 = import ./default.nix { compiler = "ghc901"; };
+  queue-sheet-ghc-8107 = import ./default.nix { compiler = "ghc8107"; };
 }

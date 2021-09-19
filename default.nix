@@ -8,9 +8,9 @@
 #
 # * Build QueueSheet with a specific compiler version:
 #
-#     $ nix-build --argstr compiler ghc8104
+#     $ nix-build --argstr compiler ghc8107
 
-{ # This string argument specifies the compiler (example: "ghc8104").  When
+{ # This string argument specifies the compiler (example: "ghc8107").  When
   # not specified, the default compiler (configured below) is used.
   compiler ? null
   # This path argument specifies the packages to use.  When not specified, a
@@ -26,12 +26,12 @@
 let
 
   # This string defines the default compiler version.
-  defaultCompiler = "ghc8104";
+  defaultCompiler = "ghc8107";
 
   # This set defines working revisions for supported compiler versions.
   nixpkgsRevs = {
-    ghc8104 = "c92ca95afb5043bc6faa0d526460584eccff2277";
-    ghc884  = "c92ca95afb5043bc6faa0d526460584eccff2277";
+    ghc8107 = "b7d0ebd8f898c9a4b55653d2fefd12319f1bc3cf";
+    ghc884  = "b7d0ebd8f898c9a4b55653d2fefd12319f1bc3cf";
     # ghc865  = "2d9888f61c80f28b09d64f5e39d0ba02e3923057"; NOTE ginger broken
     ghc844  = "6a80140fdf2157d1a5500a04c87033c0dcd6bf9b";
     ghc822  = "6a80140fdf2157d1a5500a04c87033c0dcd6bf9b";
@@ -63,7 +63,7 @@ let
   # Git ignore functionality from a fixed `nixpkgs` revision is used.  Old
   # revisions do not work, proably due to an API change.
   gitIgnore = (
-    import (nixpkgsTarball nixpkgsRevs.ghc8104) {}
+    import (nixpkgsTarball nixpkgsRevs.ghc8107) {}
   ).nix-gitignore.gitignoreSourcePure;
 
 in
@@ -74,7 +74,10 @@ in
     root = gitIgnore [./.gitignore] ./.;
     name = "queue-sheet";
     source-overrides = {
-      ttc = githubTagTarball "ExtremaIS" "ttc-haskell" "ttc-haskell-1.1.0.1";
+      ttc = githubTagTarball "ExtremaIS" "ttc-haskell" "ttc-haskell-1.1.0.2";
+    };
+    overrides = self: super: {
+      mono-traversable = pkgs.haskell.lib.dontCheck super.mono-traversable;
     };
     modifier = drv:
       if isShell
