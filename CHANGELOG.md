@@ -24,7 +24,17 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.7.0.1 (2021-10-10)
+
+### Non-Breaking
+
+* Add dependency bounds
+
 ## 0.7.0.0 (2021-06-25)
+
+### Non-Breaking
+
+* Use TTC 1.1.0.1
 
 ### Breaking
 

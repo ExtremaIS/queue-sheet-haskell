@@ -124,7 +124,7 @@ deb: # build .deb package for VERSION in a Debian container
 >   -e DEBFULLNAME="$(MAINTAINER_NAME)" \
 >   -e DEBEMAIL="$(MAINTAINER_EMAIL)" \
 >   -v $(PWD)/build:/host \
->   extremais/pkg-debian-stack:buster \
+>   extremais/pkg-debian-stack:bullseye \
 >   /home/docker/bin/make-deb.sh "$(SRC)"
 .PHONY: deb
 
@@ -311,8 +311,8 @@ test-all: # run tests for all configured Stackage releases
 > @make test CONFIG=stack-8.6.5.yaml
 > @command -v hr >/dev/null 2>&1 && hr "stack-8.8.4.yaml" || true
 > @make test CONFIG=stack-8.8.4.yaml
-> @command -v hr >/dev/null 2>&1 && hr "stack-8.10.4.yaml" || true
-> @make test CONFIG=stack-8.10.4.yaml
+> @command -v hr >/dev/null 2>&1 && hr "stack-8.10.7.yaml" || true
+> @make test CONFIG=stack-8.10.7.yaml
 .PHONY: test-all
 
 test-nightly: # run tests for the latest Stackage nightly release

@@ -42,7 +42,7 @@ packages used depend entirely on the contents of the template.
 ### Installation From Source
 
 Queue Sheet can be built from source using [Stack][].  For example, you can
-install the latest release (to `/usr/bin` on Linux) as follows:
+install the latest release (to `/usr/local` on Linux) as follows:
 
 ```
 $ git clone https://github.com/ExtremaIS/queue-sheet-haskell.git
