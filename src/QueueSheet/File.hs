@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.File
 -- Description : queue sheet file loading
--- Copyright   : Copyright (c) 2020-2021 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
