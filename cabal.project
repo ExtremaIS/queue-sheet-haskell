@@ -1,5 +1,5 @@
 packages:
-    ./
+    ./queue-sheet.cabal
 
 constraints:
     aeson -ordered-keymap,
