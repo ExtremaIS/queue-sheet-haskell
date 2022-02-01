@@ -38,16 +38,13 @@ following conventions:
 
 ## 0.7.0.0 (2021-06-25)
 
-### Non-Breaking
-
-* Use TTC 1.1.0.1
-
 ### Breaking
 
 * Fix `--help` when using `optparse-applicative` `0.16`
 
 ### Non-Breaking
 
+* Use TTC 1.1.0.1
 * Refactor Nix configuration
 
 ## 0.6.0.0 (2021-05-27)
