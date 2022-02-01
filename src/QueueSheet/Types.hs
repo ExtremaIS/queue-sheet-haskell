@@ -76,6 +76,8 @@ import qualified Data.Vector as V
 -- $Name
 
 -- | Name of a queue or queue item
+--
+-- @since 0.3.0.0
 newtype Name = Name Text
   deriving newtype (Eq, Show)
 
@@ -92,6 +94,8 @@ instance TTC.Render Name where
 -- $Url
 
 -- | URL of queue or queue item
+--
+-- @since 0.3.0.0
 newtype Url = Url Text
   deriving newtype (Eq, Show)
 
@@ -108,6 +112,8 @@ instance TTC.Render Url where
 -- $Date
 
 -- | Date of last queue update
+--
+-- @since 0.3.0.0
 newtype Date = Date Text
   deriving newtype (Eq, Show)
 
@@ -124,6 +130,8 @@ instance TTC.Render Date where
 -- $Section
 
 -- | Section used to organize queues
+--
+-- @since 0.3.0.0
 newtype Section = Section Text
   deriving newtype (Eq, Show)
 
@@ -144,6 +152,8 @@ defaultSection = Section ""
 -- $Tag
 
 -- | Queue tag
+--
+-- @since 0.3.0.0
 newtype Tag = Tag Text
   deriving newtype (Eq, Show)
 
@@ -164,6 +174,8 @@ instance FromJSON Tag where
 -- $Item
 
 -- | Queue item
+--
+-- @since 0.5.0.0
 data Item
   = Item
     { itemName :: !Name
@@ -195,6 +207,8 @@ instance Ginger.ToGVal m Item where
 -- $Queue
 
 -- | Queue information
+--
+-- @since 0.5.0.0
 data Queue
   = Queue
     { queueName    :: !Name
@@ -225,6 +239,8 @@ instance FromJSON Queue where
 -- $Import
 
 -- | Import declaration
+--
+-- @since 0.3.0.0
 data Import
   = Import
     { importPath    :: !FilePath
@@ -242,6 +258,8 @@ instance FromJSON Import where
 -- $ImportOrQueue
 
 -- | Import declaration or queue information
+--
+-- @since 0.3.0.0
 data ImportOrQueue
   = IQImport !Import
   | IQQueue  !Queue
@@ -255,6 +273,8 @@ instance FromJSON ImportOrQueue where
 -- $QueuesFile
 
 -- | Queues file
+--
+-- @since 0.3.0.0
 data QueuesFile
   = QueuesFile
     { qfSections       :: ![Section]
@@ -281,6 +301,8 @@ instance FromJSON QueuesFile where
 -- $QueueSheet
 
 -- | Queue sheet
+--
+-- @since 0.3.0.0
 data QueueSheet
   = QueueSheet
     { qsSections :: ![Section]
@@ -289,7 +311,7 @@ data QueueSheet
   deriving (Eq, Show)
 
 ------------------------------------------------------------------------------
--- $Library
+-- $Internal
 
 -- | Escape a string for inclusion in a TeX document
 escapeTeX :: Text -> Text

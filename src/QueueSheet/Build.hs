@@ -42,6 +42,8 @@ import QueueSheet.Template (loadTemplate, renderTemplate)
 -- $Constants
 
 -- | Build directory name
+--
+-- @since 0.3.0.0
 buildDir :: FilePath
 buildDir = "queue-sheet-build"
 
@@ -49,6 +51,8 @@ buildDir = "queue-sheet-build"
 -- $API
 
 -- | Build a PDF
+--
+-- @since 0.3.0.0
 buildPdf
   :: FilePath        -- ^ queues path
   -> FilePath        -- ^ template path

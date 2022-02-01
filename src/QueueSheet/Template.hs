@@ -131,6 +131,8 @@ gingerContext ctx = Ginger.makeContextText $ \case
 -- $API
 
 -- | Load a Ginger template
+--
+-- @since 0.3.0.0
 loadTemplate
   :: FilePath
   -> IO (Either String (Ginger.Template Ginger.SourcePos))
@@ -162,6 +164,8 @@ loadTemplate path = first formatError <$> Ginger.parseGingerFile' options path
       ]
 
 -- | Render a template using the given context
+--
+-- @since 0.3.0.0
 renderTemplate
   :: FilePath
   -> Ginger.Template Ginger.SourcePos
