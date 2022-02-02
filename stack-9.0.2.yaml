@@ -1,7 +1,4 @@
-resolver: nightly-2022-01-10
+resolver: nightly-2022-02-01
 
 packages:
   - .
-
-extra-deps:
-  - ginger-0.10.4.0
