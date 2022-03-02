@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.File
 -- Description : queue sheet file loading
--- Copyright   : Copyright (c) 2020-2021 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
@@ -54,6 +54,8 @@ import QueueSheet.Types
 -- $Yaml
 
 -- | Load a queues YAML file, resolving imports
+--
+-- @since 0.3.0.0
 loadYaml
   :: FilePath
   -> IO (Either String QueueSheet)
@@ -66,6 +68,8 @@ loadYaml path = runExceptT $ do
 --
 -- This function defines the logic for 'loadYaml' using an arbitrary monad.
 -- It is exposed for testing purposes.
+--
+-- @since 0.3.0.0
 loadYaml'
   :: forall m. Monad m
   => (FilePath -> m (Either String ByteString))  -- ^ file loader

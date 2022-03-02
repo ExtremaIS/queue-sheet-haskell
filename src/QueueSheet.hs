@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet
 -- Description : queue sheet metadata
--- Copyright   : Copyright (c) 2020-2021 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
@@ -20,6 +20,8 @@ import qualified Paths_queue_sheet as Project
 ------------------------------------------------------------------------------
 -- $Constants
 
--- | Version
+-- | QueueSheet version string (\"@queue-sheet-haskell X.X.X.X@\")
+--
+-- @since 0.3.0.0
 version :: String
 version = "queue-sheet-haskell " ++ showVersion Project.version

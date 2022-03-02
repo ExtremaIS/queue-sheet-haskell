@@ -24,6 +24,13 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.7.0.2 (2022-03-02)
+
+### Non-Breaking
+
+* Bump `text` dependency version upper bound
+* Bump `optparse-applicative` dependency version upper bound
+
 ## 0.7.0.1 (2021-10-10)
 
 ### Non-Breaking
@@ -32,16 +39,13 @@ following conventions:
 
 ## 0.7.0.0 (2021-06-25)
 
-### Non-Breaking
-
-* Use TTC 1.1.0.1
-
 ### Breaking
 
 * Fix `--help` when using `optparse-applicative` `0.16`
 
 ### Non-Breaking
 
+* Use TTC 1.1.0.1
 * Refactor Nix configuration
 
 ## 0.6.0.0 (2021-05-27)
