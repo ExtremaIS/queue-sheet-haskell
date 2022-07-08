@@ -1,4 +1,4 @@
-resolver: nightly-2022-06-15
+resolver: nightly-2022-07-07
 
 packages:
   - .
@@ -7,7 +7,8 @@ extra-deps:
   - aeson-2.1.0.0
   - exceptions-0.10.5
   - generically-0.1
-  - /home/tcard/nursery/external/ginger
+  - git: https://github.com/tdammers/ginger.git
+    commit: eb33b2bdb481d9fcc08e1d59722c52a79687e665
   - mtl-2.3
   - parsec-3.1.15.1
   - text-2.0
