@@ -30,6 +30,7 @@ following conventions:
 
 * Bump `aeson` dependency version upper bound
 * Bump `ttc` dependency version upper bound
+* Bump `vector` dependency version upper bound
 
 ## 0.7.0.2 (2022-03-02)
 
