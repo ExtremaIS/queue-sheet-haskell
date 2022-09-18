@@ -1,9 +1,10 @@
 packages: queue-sheet.cabal
 
 constraints:
-    ginger == 0.10.4.0
+  aeson +ordered-keymap,
+  ginger == 0.10.4.0
 
 allow-newer:
-    ginger-0.10.4.0:aeson
-  , ginger-0.10.4.0:bytestring
-  , ginger-0.10.4.0:text
+  ginger-0.10.4.0:aeson,
+  ginger-0.10.4.0:bytestring,
+  ginger-0.10.4.0:text
