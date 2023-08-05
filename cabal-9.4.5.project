@@ -1,0 +1,8 @@
+packages: queue-sheet.cabal
+
+constraints:
+  aeson +ordered-keymap,
+  ginger == 0.10.5.1
+
+allow-newer:
+  ginger-0.10.5.1:vector

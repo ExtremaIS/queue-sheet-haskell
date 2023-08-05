@@ -1,0 +1,13 @@
+resolver: lts-21.6
+
+packages:
+  - .
+
+extra-deps:
+  - ginger-0.10.5.1
+
+flags:
+  aeson:
+    ordered-keymap: false
+
+allow-newer: true
