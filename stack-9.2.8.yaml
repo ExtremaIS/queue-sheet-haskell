@@ -1,12 +1,10 @@
-resolver: lts-20.5
+resolver: lts-20.26
 
 packages:
   - .
 
 extra-deps:
-  - ginger-0.10.4.0
-
-allow-newer: true
+  - ginger-0.10.5.1
 
 flags:
   aeson:
