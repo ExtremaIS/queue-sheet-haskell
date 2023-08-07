@@ -2,4 +2,5 @@ packages: queue-sheet.cabal
 
 constraints:
   aeson == 1.4.6.0,
-  ginger == 0.9.1.0
+  ginger == 0.9.1.0,
+  vector == 0.12.1.2
