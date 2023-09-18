@@ -97,6 +97,7 @@ output.
 
 * Hackage: <https://hackage.haskell.org/package/queue-sheet>
 * Stackage: <https://www.stackage.org/package/queue-sheet>
+* Flora: <https://flora.pm/packages/@hackage/queue-sheet>
 * GitHub: <https://github.com/ExtremaIS/queue-sheet-haskell>
 * GitHub Actions CI: <https://github.com/ExtremaIS/queue-sheet-haskell/actions>
 
