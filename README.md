@@ -40,9 +40,12 @@ Use Queue Sheet to track:
 Queue Sheet has only been tested on Linux.  It *might* work on Windows and
 macOS.
 
-Queue Sheet uses [XeTeX](https://tug.org/xetex/) to build PDFs.  It is usually
-installed as part of [TeX Live](https://www.tug.org/texlive/).  The LaTeX
-packages used depend entirely on the contents of the template.
+Queue Sheet uses [XeTeX][] to build PDFs.  It is usually installed as part of
+[TeX Live][].  The LaTeX packages used depend entirely on the contents of the
+template.
+
+[XeTeX]: <https://tug.org/xetex/>
+[TeX Live]: <https://www.tug.org/texlive/>
 
 ### Installation
 
@@ -80,10 +83,13 @@ $ stack install queue-sheet
 
 ### Usage
 
-See the [`queue-sheet` man page](doc/queue-sheet.1.md) for usage information.
+See the [`queue-sheet` man page][] for usage information.
 
-See the [examples](examples) directory for example queue files, templates, and
-built output.
+See the [examples][] directory for example queue files, templates, and built
+output.
+
+[`queue-sheet` man page]: <doc/queue-sheet.1.md>
+[examples]: <examples>
 
 ## Project
 
@@ -101,7 +107,9 @@ no plans to put the package on Hackage.
 
 All releases are tagged in the `main` branch.  Release tags are signed using
 the
-[`security@extrema.is` GPG key](http://keys.gnupg.net/pks/lookup?op=vindex&fingerprint=on&search=0x1D484E4B4705FADF).
+[`security@extrema.is` GPG key][].
+
+[`security@extrema.is` GPG key]: <http://keys.gnupg.net/pks/lookup?op=vindex&fingerprint=on&search=0x1D484E4B4705FADF>
 
 ### Contribution
 
@@ -112,6 +120,8 @@ Issues may also be submitted via email to <bugs@extrema.is>.
 
 ### License
 
-This project is released under the
-[MIT License](https://opensource.org/licenses/MIT) as specified in the
-[`LICENSE`](LICENSE) file.
+This project is released under the [MIT License][] as specified in the
+[`LICENSE`][] file.
+
+[MIT License]: <https://opensource.org/licenses/MIT>
+[`LICENSE`]: <LICENSE>
