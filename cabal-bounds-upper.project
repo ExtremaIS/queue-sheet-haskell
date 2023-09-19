@@ -6,9 +6,6 @@ constraints:
     -- https://hackage.haskell.org/package/aeson
     aeson == 2.1.2.1
 
-    -- https://hackage.haskell.org/package/ansi-wl-pprint
-  , ansi-wl-pprint == 0.6.9
-
     -- https://hackage.haskell.org/package/base
     -- GHC boot library
   , base == 4.17.2.0
@@ -29,7 +26,10 @@ constraints:
   , ginger == 0.10.5.2
 
     -- https://hackage.haskell.org/package/optparse-applicative
-  , optparse-applicative == 0.17.1.0
+  , optparse-applicative == 0.18.1.0
+
+    -- https://hackage.haskell.org/package/prettyprinter
+  , prettyprinter == 1.7.1
 
     -- https://hackage.haskell.org/package/process
     -- GHC boot library

@@ -29,6 +29,8 @@ following conventions:
 ### Non-Breaking
 
 * Bump `aeson` dependency version upper bound
+* Bump `ansi-wl-pprint` dependency version upper bound
+* Add support for `optparse-applicative` `0.18`
 * Bump `ttc` dependency version upper bound
 * Bump `vector` dependency version upper bound
 * Adjust dependency constraints to match tested versions
