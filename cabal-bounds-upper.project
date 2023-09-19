@@ -4,7 +4,7 @@ with-compiler: ghc-9.4.7
 
 constraints:
     -- https://hackage.haskell.org/package/aeson
-    aeson == 2.1.2.1
+    aeson == 2.2.0.0
 
     -- https://hackage.haskell.org/package/base
     -- GHC boot library
