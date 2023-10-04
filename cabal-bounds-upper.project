@@ -1,6 +1,6 @@
 packages: ./queue-sheet.cabal
 
-with-compiler: ghc-9.6.2
+with-compiler: ghc-9.6.3
 
 constraints:
     -- https://hackage.haskell.org/package/aeson
@@ -8,7 +8,7 @@ constraints:
 
     -- https://hackage.haskell.org/package/base
     -- GHC boot library
-  , base == 4.18.0.0
+  , base == 4.18.1.0
 
     -- https://hackage.haskell.org/package/bytestring
     -- GHC boot library
@@ -33,7 +33,7 @@ constraints:
 
     -- https://hackage.haskell.org/package/process
     -- GHC boot library
-  , process == 1.6.17.0
+  , process == 1.6.18.0
 
     -- https://hackage.haskell.org/package/scientific
   , scientific == 0.3.7.0
