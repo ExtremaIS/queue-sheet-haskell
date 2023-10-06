@@ -3,8 +3,7 @@
 - name: "ZuriHac 2020"
   url: https://www.youtube.com/channel/UC2zfPMH_srjxUN5EYrfIhCw/videos
   date: 2020-06-20
-  tags:
-    - split
+  tags: split
   next:
     - name: "A bare-bones Twitter clone implemented with Haskell + Nix"
       url: https://www.youtube.com/watch?v=Q3qjTVcU9cg

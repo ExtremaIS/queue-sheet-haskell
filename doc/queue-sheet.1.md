@@ -62,34 +62,30 @@ an array of queue objects, which have the following properties:
 :   date of last update (string, optional)
 
 *tags*
-:   list of tags (simplified CSV string or array of strings, optional)
+:   list of tags (space-separated string or array of strings, optional)
 
 *prev*
 :   previous item (item, optional)
 
 *next*
-:   list of next items (simplified CSV string or array of items, optional)
+:   list of next items (space-separated string or array of items, optional)
 
 The only required property is *name*.
 
 The *tags* property associates one or more string tags with the queue.  Tags
-can be specified using a string in simplified CSV format or an array of
-strings.  A simplified CSV string is split on commas, and leading/trailing
-whitespace is stripped from each item.  A tag must consist of at least one
-ASCII letter, number, period, underscore, or dash.  For example, tag
-"complete" can be used to indicate that there will be no new episodes of a
-podcast that is complete.
+can be specified using a space-separated string or an array of strings.  A tag
+must consist of at least one ASCII letter, number, period, underscore, or
+dash.  For example, tag "complete" can be used to indicate that there will be
+no new episodes of a podcast that is complete.
 
 The *next* property is a list of next items in the queue.  When the list is
 exhausted, the previous item can be specified using the *prev* property.  If
 both *prev* and *next* are specified, *prev* is ignored.
 
-Next items can be specified using a string in simplified CSV format or an
-array or items.  A simplified CSV string is split on commas, and
-leading/trailing whitespace is stripped from each item.  When specifying items
-using an array, the item name can be specified using a string or a number, or
-an object with the following properties can be used in order to specify more
-item information:
+Next items can be specified using a space-separated string or an array or
+items.  When specifying items using an array, the item name can be specified
+using a string or a number, or an object with the following properties can be
+used in order to specify more item information:
 
 *name*
 :   name of the item (string, required)
@@ -98,7 +94,7 @@ item information:
 :   item URL (string, optional)
 
 *tags*
-:   list of tags (simplified CSV string or array of strings, optional)
+:   list of tags (space-separated string or array of strings, optional)
 
 To organize queues into sections, the YAML file should be written as an object
 with two properties:

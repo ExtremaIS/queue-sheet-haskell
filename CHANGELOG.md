@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Breaking
+
+* Support whitespace-separated tags and items instead of CSV
+
 ### Non-Breaking
 
 * Bump `aeson` dependency version upper bound

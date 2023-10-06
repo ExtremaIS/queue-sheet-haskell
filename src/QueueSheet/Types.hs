@@ -159,7 +159,7 @@ newtype Tag = Tag Text
 
 instance FromJSON Tag where
   parseJSON = A.withText "Tag" $ \t -> do
-      when (T.null t) $ fail "empty tag"
+      when (T.null t) $ fail "empty string"
       unless (T.all isValidChar t) $ fail ("invalid tag: " ++ T.unpack t)
       return $ Tag t
     where
@@ -175,6 +175,8 @@ instance FromJSON Tag where
 
 -- | Queue item
 --
+-- Whitespace-separated tags are supported /instead of/ CSV from @0.8.0.0@.
+--
 -- @since 0.5.0.0
 data Item
   = Item
@@ -189,7 +191,7 @@ instance FromJSON Item where
     (A.Object o) -> do
       itemName <- o .:  "name"
       itemUrl  <- o .:? "url"
-      itemTags <- maybe (pure []) parseCSV =<< (o .:? "tags")
+      itemTags <- maybe (pure []) parseSSV =<< (o .:? "tags")
       return Item{..}
     value -> do
       itemName <- Name <$> parseToString value
@@ -207,6 +209,9 @@ instance Ginger.ToGVal m Item where
 -- $Queue
 
 -- | Queue information
+--
+-- Whitespace-separated items and tags are supported /instead of/ CSV from
+-- @0.8.0.0@.
 --
 -- @since 0.5.0.0
 data Queue
@@ -226,11 +231,11 @@ instance FromJSON Queue where
     queueUrl     <- o .:? "url"
     queueDate    <- o .:? "date"
     queueSection <- o .:? "section" .!= defaultSection
-    queueTags    <- maybe (pure []) parseCSV =<< (o .:? "tags")
+    queueTags    <- maybe (pure []) parseSSV =<< (o .:? "tags")
     mPrevItem    <- o .:? "prev"
     mNextValue   <- o .:? "next"
     queueItems   <- case (mPrevItem, mNextValue) of
-      (_,         Just nextValue) -> Just . Right <$> parseCSV nextValue
+      (_,         Just nextValue) -> Just . Right <$> parseSSV nextValue
       (Just item, Nothing)        -> pure . Just $ Left item
       (Nothing,   Nothing)        -> pure Nothing
     return Queue{..}
@@ -331,16 +336,17 @@ escapeTeX = T.foldl go ""
       '~'  -> acc <> "\\textasciitilde{}"
       c    -> acc `T.snoc` c
 
--- | Parse an array or string in simplified CSV format
+-- | Parse an array or string in space-separated-value format
 --
--- Strings are split on commas, and leading/trailing whitespace is removed
--- from each item.
-parseCSV :: A.FromJSON a => A.Value -> AT.Parser [a]
-parseCSV = \case
-    (A.String t) -> mapM (parseJSON . A.String . T.strip) $ T.splitOn "," t
-    (A.Array v)  -> mapM parseJSON $ V.toList v
-    A.Object{}   -> fail "unexpected object"
-    value        -> (: []) <$> parseJSON value
+-- Strings are split on whitespace.
+parseSSV :: A.FromJSON a => A.Value -> AT.Parser [a]
+parseSSV = \case
+    (A.String t)
+      | T.null t  -> fail "empty string"
+      | otherwise -> mapM (parseJSON . A.String) $ T.words t
+    (A.Array v)   -> mapM parseJSON $ V.toList v
+    A.Object{}    -> fail "unexpected object"
+    value         -> (: []) <$> parseJSON value
 
 -- | Parse any scalar value as a string
 --
