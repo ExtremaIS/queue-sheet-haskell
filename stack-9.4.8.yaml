@@ -1,4 +1,4 @@
-resolver: lts-21.14
+resolver: lts-21.23
 
 packages:
   - .
@@ -9,5 +9,3 @@ extra-deps:
 flags:
   aeson:
     ordered-keymap: false
-
-allow-newer: true
