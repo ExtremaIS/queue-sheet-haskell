@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.Types
 -- Description : queue sheet types
--- Copyright   : Copyright (c) 2020-2023 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2024 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
