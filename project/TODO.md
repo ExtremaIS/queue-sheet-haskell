@@ -13,7 +13,7 @@
   [`ginger`](https://hackage.haskell.org/package/ginger)
 * [`filepath`](https://hackage.haskell.org/package/filepath)
   `1.5.2.0` blocked by
-  [`hashable`](https://hackage.haskell.org/package/hashable)
+  [`ginger`](https://hackage.haskell.org/package/ginger)
 * [`text`](https://hackage.haskell.org/package/text)
   `2.1` blocked by
   [`ginger`](https://hackage.haskell.org/package/ginger)
