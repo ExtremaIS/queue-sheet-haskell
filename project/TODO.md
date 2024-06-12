@@ -6,11 +6,18 @@
 
 ## Compatibility
 
-* GHC 9.8.1 blocked by
+* GHC 9.8 blocked by
+  [`ginger`](https://hackage.haskell.org/package/ginger)
+  ([PR](https://github.com/tdammers/ginger/pull/81))
+* GHC 9.10 blocked by
   [`ginger`](https://hackage.haskell.org/package/ginger)
   ([PR](https://github.com/tdammers/ginger/pull/81))
 * [`bytestring`](https://hackage.haskell.org/package/bytestring)
   `0.12` blocked by
+  [`ginger`](https://hackage.haskell.org/package/ginger)
+  ([PR](https://github.com/tdammers/ginger/pull/81))
+* [`containers`](https://hackage.haskell.org/package/containers)
+  `0.7` blocked by
   [`ginger`](https://hackage.haskell.org/package/ginger)
   ([PR](https://github.com/tdammers/ginger/pull/81))
 * [`filepath`](https://hackage.haskell.org/package/filepath)
