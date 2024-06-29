@@ -28,7 +28,7 @@ tested-with:
    || ==9.4.8
    || ==9.6.5
 
-extra-source-files:
+extra-doc-files:
   CHANGELOG.md
   README.md
 
