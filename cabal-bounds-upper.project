@@ -33,7 +33,7 @@ constraints:
 
     -- https://hackage.haskell.org/package/process
     -- GHC boot library
-  , process == 1.6.21.0
+  , process == 1.6.22.0
 
     -- https://hackage.haskell.org/package/scientific
   , scientific == 0.3.7.0
