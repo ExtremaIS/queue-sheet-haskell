@@ -50,7 +50,7 @@ constraints:
 
     -- https://hackage.haskell.org/package/transformers
     -- GHC boot library
-  , transformers == 0.6.1.1
+  , transformers == 0.6.1.2
 
     -- https://hackage.haskell.org/package/ttc
   , ttc == 1.4.0.0
