@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Non-Breaking
+
+* Flip `optparse-applicative_ge_0_18` flag
+
 ## 0.8.0.0 (2025-01-03)
 
 ### Breaking
