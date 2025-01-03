@@ -33,7 +33,7 @@ the following to your `stack.yaml` configuration:
 
 ```yaml
 extra-deps:
-  - queue-sheet-0.8.0.0
+  - queue-sheet-0.8.0.1
 
 ### Issues
 
