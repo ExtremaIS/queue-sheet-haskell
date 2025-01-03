@@ -1,4 +1,4 @@
-resolver: nightly-2025-01-02
+resolver: nightly-2025-01-03
 
 packages:
   - .
@@ -6,5 +6,3 @@ packages:
 flags:
   aeson:
     ordered-keymap: false
-  queue-sheet:
-    optparse-applicative_ge_0_18: true

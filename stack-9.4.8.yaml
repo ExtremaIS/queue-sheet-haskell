@@ -3,9 +3,11 @@ resolver: lts-21.25
 packages:
   - .
 
-extra-deps:
-  - ginger-0.10.5.2
-
 flags:
   aeson:
     ordered-keymap: false
+  queue-sheet:
+    optparse-applicative_ge_0_18: false
+
+extra-deps:
+  - ginger-0.10.5.2
