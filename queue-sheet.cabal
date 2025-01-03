@@ -63,7 +63,7 @@ library
     , scientific >=0.3.6.2 && <0.4
     , text >=1.2.4 && <2.2
     , transformers >=0.5.6.2 && <0.7
-    , ttc >=1.1 && <1.5
+    , ttc >=1.1 && <1.6
     , vector >=0.12.1.2 && <0.14
     , yaml >=0.11.5 && <0.12
   default-language: Haskell2010
