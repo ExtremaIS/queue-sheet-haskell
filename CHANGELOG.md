@@ -40,6 +40,7 @@ following conventions:
 * Bump `ansi-wl-pprint` dependency version upper bound
 * Bump `base` dependency version upper bound
 * Bump `bytestring` dependency version upper bound
+* Bump `filepath` dependency version upper bound
 * Add support for `optparse-applicative` `0.18`
 * Bump `tasty` dependency version upper bound
 * Bump `text` dependency version upper bound
