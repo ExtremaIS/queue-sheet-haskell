@@ -6,8 +6,6 @@ packages:
 flags:
   aeson:
     ordered-keymap: false
-  queue-sheet:
-    optparse-applicative_ge_0_18: true
 
 extra-deps:
   - ginger-0.10.5.2@rev:1
