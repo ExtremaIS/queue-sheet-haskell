@@ -5,6 +5,7 @@ with-compiler: ghc-9.10.1
 constraints:
     -- https://hackage.haskell.org/package/aeson
     aeson == 2.2.3.0
+  , aeson +ordered-keymap
 
     -- https://hackage.haskell.org/package/base
     -- GHC boot library
