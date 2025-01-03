@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.Template
 -- Description : queue sheet template functions
--- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2025 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
@@ -23,6 +23,7 @@ module QueueSheet.Template
 
 -- https://hackage.haskell.org/package/base
 import Data.Bifunctor (first)
+import Data.Either (fromRight)
 #if !MIN_VERSION_base (4,11,0)
 import Data.Monoid ((<>))
 #endif
@@ -80,7 +81,7 @@ queueCtx Queue{..} = QueueCtx
     , date      = queueDate
     , tags      = queueTags
     , prevItem  = either Just (const Nothing) =<< queueItems
-    , nextItems = maybe [] (either (const []) id) queueItems
+    , nextItems = maybe [] (fromRight []) queueItems
     }
 
 ------------------------------------------------------------------------------

@@ -1,0 +1,10 @@
+resolver: lts-22.43
+
+packages:
+  - .
+
+flags:
+  aeson:
+    ordered-keymap: false
+  queue-sheet:
+    optparse-applicative_ge_0_18: true

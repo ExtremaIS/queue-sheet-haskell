@@ -24,6 +24,31 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## 0.8.0.0 (2025-01-03)
+
+### Breaking
+
+* Support whitespace-separated tags and items instead of CSV
+* Remove support for GHC 8.6, constraining lower bounds
+* Remove support for GHC 8.4, constraining lower bounds
+* Remove support for GHC 8.2, constraining lower bounds
+* Change minimal Cabal from 1.24 to 3.0
+
+### Non-Breaking
+
+* Bump `aeson` dependency version upper bound
+* Bump `ansi-wl-pprint` dependency version upper bound
+* Bump `base` dependency version upper bound
+* Bump `bytestring` dependency version upper bound
+* Bump `filepath` dependency version upper bound
+* Add support for `optparse-applicative` `0.18`
+* Bump `tasty` dependency version upper bound
+* Bump `text` dependency version upper bound
+* Bump `transformers` dependency version upper bound
+* Bump `ttc` dependency version upper bound
+* Bump `vector` dependency version upper bound
+* Adjust dependency constraints to match tested versions
+
 ## 0.7.0.2 (2022-03-02)
 
 ### Non-Breaking

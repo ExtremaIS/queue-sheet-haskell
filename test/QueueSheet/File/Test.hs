@@ -2,7 +2,7 @@
 -- |
 -- Module      : QueueSheet.File.Test
 -- Description : queues file tests
--- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2025 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 
@@ -326,7 +326,7 @@ testQueueTag = testGroup "tag"
         , testCase "empty" $ do
             let message = intercalate "\n"
                   [ "error loading /tmp/test.yaml: Aeson exception:"
-                  , "Error in $[0]: empty tag"
+                  , "Error in $[0]: empty string"
                   ]
             Left message @=? loadYaml
               [ validFile "/tmp/test.yaml"
@@ -366,7 +366,7 @@ testQueueTag = testGroup "tag"
                   ]
             unless (Left messageOld == eeq) $ Left message @=? eeq
         ]
-    , testGroup "csv"
+    , testGroup "ssv"
         [ testCase "single" $ do
             let expected = defaultQueueSheet
                   { qsQueues =
@@ -394,13 +394,30 @@ testQueueTag = testGroup "tag"
             Right expected @=? loadYaml
               [ validFile "/tmp/test.yaml"
                   [ "- name: test"
-                  , "  tags: complete, partial"
+                  , "  tags: complete partial"
+                  ]
+              ]
+        , testCase "folded" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName = Name "test"
+                          , queueTags = [Tag "complete", Tag "partial"]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  tags: >"
+                  , "    complete"
+                  , "    partial"
                   ]
               ]
         , testCase "empty" $ do
             let message = intercalate "\n"
                   [ "error loading /tmp/test.yaml: Aeson exception:"
-                  , "Error in $[0]: empty tag"
+                  , "Error in $[0]: empty string"
                   ]
             Left message @=? loadYaml
               [ validFile "/tmp/test.yaml"
@@ -566,7 +583,7 @@ testQueuePrev = testGroup "prev"
                   , "      - two"
                   ]
               ]
-        , testCase "csv" $ do
+        , testCase "ssv" $ do
             let expected = defaultQueueSheet
                   { qsQueues =
                       [ defaultQueue
@@ -583,7 +600,7 @@ testQueuePrev = testGroup "prev"
                   [ "- name: test"
                   , "  prev:"
                   , "    name: 42"
-                  , "    tags: one, two"
+                  , "    tags: one two"
                   ]
               ]
         ]
@@ -712,7 +729,7 @@ testQueueNext = testGroup "next"
                       , "        - two"
                       ]
                   ]
-            , testCase "csv" $ do
+            , testCase "ssv" $ do
                 let expected = defaultQueueSheet
                       { qsQueues =
                           [ defaultQueue
@@ -731,7 +748,7 @@ testQueueNext = testGroup "next"
                       [ "- name: test"
                       , "  next:"
                       , "    - name: one"
-                      , "      tags: one, two"
+                      , "      tags: one two"
                       ]
                   ]
             ]
@@ -811,7 +828,7 @@ testQueueNext = testGroup "next"
                   ]
               ]
         ]
-    , testGroup "csv"
+    , testGroup "ssv"
         [ testCase "single" $ do
             let expected = defaultQueueSheet
                   { qsQueues =
@@ -869,7 +886,31 @@ testQueueNext = testGroup "next"
             Right expected @=? loadYaml
               [ validFile "/tmp/test.yaml"
                   [ "- name: test"
-                  , "  next: 11, 42"
+                  , "  next: 11 42"
+                  ]
+              ]
+        , testCase "folded" $ do
+            let expected = defaultQueueSheet
+                  { qsQueues =
+                      [ defaultQueue
+                          { queueName  = Name "test"
+                          , queueItems = Just $ Right
+                              [ defaultItem
+                                  { itemName = Name "11"
+                                  }
+                              , defaultItem
+                                  { itemName = Name "42"
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+            Right expected @=? loadYaml
+              [ validFile "/tmp/test.yaml"
+                  [ "- name: test"
+                  , "  next: >"
+                  , "    11"
+                  , "    42"
                   ]
               ]
         , testCase "empty" $ do

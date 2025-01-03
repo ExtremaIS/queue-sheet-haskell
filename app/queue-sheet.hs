@@ -2,7 +2,7 @@
 -- |
 -- Module      : Main
 -- Description : queue-sheet program
--- Copyright   : Copyright (c) 2020-2022 Travis Cardwell
+-- Copyright   : Copyright (c) 2020-2025 Travis Cardwell
 -- License     : MIT
 ------------------------------------------------------------------------------
 

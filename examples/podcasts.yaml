@@ -19,10 +19,8 @@ queues:
     url: https://changelog.com/podcast
     date: 2020-08-12
     section: Programming
-    tags:
-      - partial
-    next:
-      - 408
+    tags: partial
+    next: 408
 
   - name: Co-Recursive
     url: https://corecursive.com/
@@ -52,7 +50,7 @@ queues:
     url: https://www.preposterousuniverse.com/podcast/
     date: 2020-08-17
     section: Other
-    next: 108,109,110
+    next: 108 109 110
 
   - name: Quanta
     url: https://www.quantamagazine.org/tag/podcast/
@@ -64,6 +62,5 @@ queues:
     url: https://www.se-radio.net/
     date: 2020-08-18
     section: Programming
-    tags:
-      - partial
+    tags: partial
     prev: 422

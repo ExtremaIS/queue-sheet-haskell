@@ -1,42 +1,44 @@
-name:           queue-sheet
-version:        0.7.0.2
-category:       Utils
-synopsis:       queue sheet utility
+cabal-version:      3.0
+name:               queue-sheet
+version:            0.8.0.0
+synopsis:           queue sheet utility
 description:
   This package provides a utility for creating queue sheets.  Please see the
   README on GitHub at
   <https://github.com/ExtremaIS/queue-sheet-haskell#readme>.
+homepage:           https://github.com/ExtremaIS/queue-sheet-haskell#readme
+bug-reports:        https://github.com/ExtremaIS/queue-sheet-haskell/issues
+license:            MIT
+license-file:       LICENSE
+author:             Travis Cardwell <travis.cardwell@extrema.is>
+maintainer:         Travis Cardwell <travis.cardwell@extrema.is>
+copyright:          Copyright (c) 2020-2025 Travis Cardwell
+category:           Utils
+build-type:         Simple
 
-homepage:       https://github.com/ExtremaIS/queue-sheet-haskell#readme
-bug-reports:    https://github.com/ExtremaIS/queue-sheet-haskell/issues
-author:         Travis Cardwell <travis.cardwell@extrema.is>
-maintainer:     Travis Cardwell <travis.cardwell@extrema.is>
-copyright:      Copyright (c) 2020-2022 Travis Cardwell
-license:        MIT
-license-file:   LICENSE
-
-cabal-version:  1.24
-build-type:     Simple
-tested-with:
-  GHC ==8.2.2
-   || ==8.4.4
-   || ==8.6.5
-   || ==8.8.4
-   || ==8.10.7
-   || ==9.0.2
-   || ==9.2.1
-
-extra-source-files:
+extra-doc-files:
   CHANGELOG.md
   README.md
+
+tested-with:
+  GHC ==8.8.4
+   || ==8.10.7
+   || ==9.0.2
+   || ==9.2.8
+   || ==9.4.8
+   || ==9.6.6
+   || ==9.8.4
+   || ==9.10.1
 
 source-repository head
   type: git
   location: https://github.com/ExtremaIS/queue-sheet-haskell.git
 
-flag write-hie
-  description: write .hie files
+-- This flag is referenced in the Stack build-constraints.yaml configuration.
+flag optparse-applicative_ge_0_18
+  description: Use optparse-applicative 0.18 or newer
   default: False
+  manual: False
 
 library
   hs-source-dirs: src
@@ -48,25 +50,24 @@ library
     , QueueSheet.Types
   other-modules:
       Paths_queue_sheet
+  autogen-modules:
+      Paths_queue_sheet
   build-depends:
-      aeson >= 1.2 && <2.1
-    , base >=4.7 && <5
-    , bytestring >=0.10.8 && <0.12
-    , directory >=1.3 && <1.4
-    , filepath >=1.4 && <1.5
-    , ginger >=0.7.3 && <0.11
-    , process >=1.6 && <1.7
-    , scientific >=0.3 && <0.4
-    , text >=1.2.3 && <2.1
-    , transformers >=0.5.2 && <0.6
-    , ttc >=1.1 && <1.2
-    , vector >=0.12 && <0.13
-    , yaml >=0.8 && <0.12
+      aeson >= 1.4.7.1 && <2.3
+    , base >=4.13 && <4.21
+    , bytestring >=0.10.10.1 && <0.13
+    , directory >=1.3.6 && <1.4
+    , filepath >=1.4.2.1 && <1.6
+    , ginger >=0.10.1 && <0.11
+    , process >=1.6.9 && <1.7
+    , scientific >=0.3.6.2 && <0.4
+    , text >=1.2.4 && <2.2
+    , transformers >=0.5.6.2 && <0.7
+    , ttc >=1.1 && <1.6
+    , vector >=0.12.1.2 && <0.14
+    , yaml >=0.11.5 && <0.12
   default-language: Haskell2010
-  if flag(write-hie)
-    ghc-options: -Wall -fwrite-ide-info -hiedir=.hie
-  else
-    ghc-options: -Wall
+  ghc-options: -Wall
 
 executable queue-sheet
   hs-source-dirs: app
@@ -74,10 +75,16 @@ executable queue-sheet
   other-modules:
       LibOA
   build-depends:
-      ansi-wl-pprint >=0.6 && <0.7
-    , base
-    , optparse-applicative >=0.14 && <0.18
+      base
     , queue-sheet
+  if flag(optparse-applicative_ge_0_18)
+    build-depends:
+        optparse-applicative >=0.18 && <0.19
+      , prettyprinter >=1.7.1 && <1.8
+  else
+    build-depends:
+        ansi-wl-pprint >=0.6.9 && <1.1
+      , optparse-applicative >=0.15.1 && <0.18
   default-language: Haskell2010
   ghc-options: -Wall
 
@@ -91,7 +98,7 @@ test-suite queue-sheet-test
       base
     , bytestring
     , queue-sheet
-    , tasty >=1.0 && <1.5
-    , tasty-hunit >=0.10 && <0.11
+    , tasty >=1.2.3 && <1.6
+    , tasty-hunit >=0.10.0.3 && <0.11
   default-language: Haskell2010
   ghc-options: -Wall

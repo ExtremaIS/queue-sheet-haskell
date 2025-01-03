@@ -3,8 +3,7 @@
 - name: "Haskell Love 2020"
   url: https://www.youtube.com/playlist?list=PLBqWQH1MiwBSK9wuaATNS701c43VYVTuc
   date: 2020-08-13
-  tags:
-    - split
+  tags: split
   next:
     - name: "aeson-schemas: Safely extract JSON data when data types are too cumbersome"
       url: https://www.youtube.com/watch?v=vJQtEa_7O3Q
