@@ -38,8 +38,11 @@ following conventions:
 
 * Bump `aeson` dependency version upper bound
 * Bump `ansi-wl-pprint` dependency version upper bound
+* Bump `base` dependency version upper bound
+* Bump `bytestring` dependency version upper bound
 * Add support for `optparse-applicative` `0.18`
 * Bump `tasty` dependency version upper bound
+* Bump `text` dependency version upper bound
 * Bump `transformers` dependency version upper bound
 * Bump `ttc` dependency version upper bound
 * Bump `vector` dependency version upper bound
