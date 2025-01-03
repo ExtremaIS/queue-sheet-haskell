@@ -24,6 +24,8 @@ following conventions:
 
 [KaC]: <https://keepachangelog.com/en/1.0.0/>
 
+## Unreleased
+
 ## 0.8.0.1 (2025-01-04)
 
 ### Non-Breaking
