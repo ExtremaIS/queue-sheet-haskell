@@ -31,6 +31,7 @@ following conventions:
 ### Non-Breaking
 
 * Flip `optparse-applicative_ge_0_18` flag
+* Bump `base` dependency version upper bound
 
 ## 0.8.0.0 (2025-01-03)
 
