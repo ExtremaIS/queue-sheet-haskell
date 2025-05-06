@@ -1,4 +1,4 @@
-resolver: lts-23.2
+resolver: lts-23.21
 
 packages:
   - .
@@ -8,4 +8,4 @@ flags:
     ordered-keymap: false
 
 extra-deps:
-  - ginger-0.10.5.2@rev:1
+  - ginger-0.10.6.0
