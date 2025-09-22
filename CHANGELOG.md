@@ -26,6 +26,10 @@ following conventions:
 
 ## Unreleased
 
+### Non-Breaking
+
+* Bump `optparse-applicative` dependency version upper bound
+
 ## 0.8.0.1 (2025-01-04)
 
 ### Non-Breaking
